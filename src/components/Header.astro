@@ -26,16 +26,13 @@ const base = import.meta.env.BASE_URL;
     </div>
   </div>
 
-  <div
-    id="mobile-menu"
-    class="hidden md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-md absolute top-full left-0 w-full shadow-lg"
-  >
-    <nav class="flex flex-col space-y-1 px-4 py-4 text-sm font-medium text-slate-600">
-      <a href={`${base}eksploruj`} class="group flex items-center gap-2 rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900" > <span>Kalkulatory</span> </a>
+  <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white backdrop-blur-md absolute top-full left-0 w-full shadow-lg" >
+    <nav class="flex flex-col space-y-1 px-4 py-4 text-sm font-medium [&>a]:text-gray-600 [&>a]:hover:text-gray-900 transition-colors">
+      <a href={`${base}eksploruj`} class="group flex items-center gap-2 rounded-lg p-2 transition-colors hover:bg-slate-100" > <span>Kalkulatory</span> </a>
 
-      <a href={`${base}o-projekcie`} class="flex items-center rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900" > <span>O projekcie</span> </a>
+      <a href={`${base}o-projekcie`} class="flex items-center rounded-lg p-2 transition-colors hover:bg-slate-100" > <span>O projekcie</span> </a>
 
-      <a href={`${base}kontakt`} class="flex items-center rounded-lg p-2 transition-colors hover:bg-slate-100 hover:text-slate-900" > <span>Kontakt</span> </a>
+      <a href={`${base}kontakt`} class="flex items-center rounded-lg p-2 transition-colors hover:bg-slate-100" > <span>Kontakt</span> </a>
     </nav>
   </div>
 </header>
