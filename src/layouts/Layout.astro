@@ -8,30 +8,34 @@ interface Props {
 
 const { title } = Astro.props;
 ---
+
 <!doctype html>
-<html lang="pl">
+<html lang="pl" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
+    <meta name="description" content="Strona domowa - dr Łukasz Rosicki" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body>
-    <Navbar /> <main class="container">
-      <slot /> </main>
+  <body class="bg-slate-50 text-slate-900 antialiased flex flex-col min-h-screen font-sans">
+    <Navbar />
+    
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+      <slot />
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-6">
+      <div class="container mx-auto px-4 max-w-6xl flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
+        <div>
+          &copy; {new Date().getFullYear()} dr Łukasz Rosicki. Wszelkie prawa zastrzeżone.
+        </div>
+        <div class="flex gap-4">
+          <a href="https://github.com/lukaszrosicki" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+          <a href="#" class="hover:text-white transition-colors">Kontakt</a>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
-
-<style is:global>
-  /* Globalne style dla całej aplikacji */
-  body {
-    background: #050505;
-    color: #e5e5e5;
-    font-family: system-ui, sans-serif;
-    margin: 0;
-  }
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-</style>

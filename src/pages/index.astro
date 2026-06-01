@@ -1,1 +1,92 @@
-tt
+---
+// src/pages/index.astro
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import ToolCard from '../components/ToolCard.astro';
+
+// Pobieramy kolekcję narzędzi (bierzemy max 3 najnowsze na stronę główną)
+const allTools = await getCollection('tools');
+const featuredTools = allTools.slice(0, 3);
+---
+
+<Layout title="dr Łukasz Rosicki | Strona Domowa">
+  <section class="py-12 md:py-20 border-b border-slate-200">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+      <div class="md:col-span-2 space-y-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold tracking-wide uppercase">
+          ⚡ IT Engineer & Researcher
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+          Architektura Oprogramowania, <br class="hidden sm:inline"/>
+          Przetwarzanie Danych i Systemy IT
+        </h1>
+        <p class="text-lg text-slate-600 max-w-2xl leading-relaxed">
+          Witaj na mojej platformie inżynieryjnej. Łączę akademicką precyzję z produkcyjnym podejściem do rozwoju systemów rozproszonych, analizy danych w Pythonie oraz nowoczesnych interfejsów webowych.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-2">
+          <a href="/narzedzia" class="bg-indigo-600 text-white font-medium px-5 py-2.5 rounded-lg hover:bg-indigo-700 shadow-sm shadow-indigo-200 transition-all">
+            Uruchom Narzędzia DSP
+          </a>
+          <a href="#about" class="bg-white border border-slate-300 text-slate-700 font-medium px-5 py-2.5 rounded-lg hover:bg-slate-50 transition-colors">
+            O projekcie
+          </a>
+        </div>
+      </div>
+      
+      <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+        <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Core Tech Stack</h3>
+        <ul class="space-y-3 font-mono text-sm">
+          <li class="flex justify-between border-b border-slate-100 pb-2">
+            <span class="text-slate-600">Frontend:</span>
+            <span class="text-indigo-600 font-semibold">Astro + Tailwind</span>
+          </li>
+          <li class="flex justify-between border-b border-slate-100 pb-2">
+            <span class="text-slate-600">Headless Backend:</span>
+            <span class="text-indigo-600 font-semibold">Payload CMS</span>
+          </li>
+          <li class="flex justify-between border-b border-slate-100 pb-2">
+            <span class="text-slate-600">Languages:</span>
+            <span class="text-slate-900 font-semibold">TS / JS / Python</span>
+          </li>
+          <li class="flex justify-between">
+            <span class="text-slate-600">Environment:</span>
+            <span class="text-emerald-600 font-semibold">Docker / CI/CD</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12">
+    <div class="flex justify-between items-end mb-8">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-slate-900">Moduły analityczne i narzędzia</h2>
+        <p class="text-slate-500 text-sm mt-1">Skrypty i aplikacje DSP zintegrowane bezpośrednio w architekturze statycznej.</p>
+      </div>
+      <a href="/narzedzia" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors hidden sm:block">
+        Zobacz wszystkie &rarr;
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {featuredTools.length > 0 ? (
+        featuredTools.map((tool) => (
+          <ToolCard tool={tool} />
+        ))
+      ) : (
+        <div class="col-span-3 border border-dashed border-slate-200 rounded-xl p-8 text-center text-slate-400 text-sm">
+          Brak narzędzi w kolekcji `src/content/tools/`. Dodaj plik markdown, aby go tu zobaczyć.
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section id="about" class="py-12 border-t border-slate-200">
+    <div class="max-w-3xl">
+      <h2 class="text-xl font-bold text-slate-900 mb-4">O projekcie domowym</h2>
+      <p class="text-slate-600 text-sm leading-relaxed mb-4">
+        Ta strona pełni rolę hybrydowego środowiska testowego oraz wizytówki inżynierskiej. Dzięki architekturze JAMstack (Astro) zapewnia zerowy narzut wydajnościowy po stronie klienta, podczas gdy Payload CMS zarządza dynamicznymi strukturami danych i meta-opisami narzędzi naukowo-technicznych.
+      </p>
+    </div>
+  </section>
+</Layout>

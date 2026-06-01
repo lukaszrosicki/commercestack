@@ -1,26 +1,39 @@
 ---
 // src/components/Navbar.astro
+const navItems = [
+  { label: 'Start', href: '/' },
+  { label: 'Narzędzia', href: '/narzedzia' },
+];
 ---
-<nav class="navbar">
-  <a href="/" class="logo">Łukasz Rosicki</a>
-  <div class="links">
-    <a href="/o-projekcie">O projekcie</a>
-    <a href="/narzedzia">Narzędzia</a>
-    <a href="/kontakt">Kontakt</a>
-  </div>
-</nav>
 
-<style>
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    background: #111;
-    border-bottom: 1px solid #222;
-  }
-  .links a {
-    margin-left: 1rem;
-    color: #fff;
-    text-decoration: none;
-  }
-</style>
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+  <div class="container mx-auto px-4 max-w-6xl h-16 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2 group">
+      <div class="w-8 h-8 rounded bg-indigo-600 flex items-center justify-center text-white font-mono font-bold text-sm group-hover:bg-indigo-700 transition-colors">
+        ŁR
+      </div>
+      <span class="font-semibold tracking-tight text-slate-800 group-hover:text-slate-900 transition-colors">
+        dr Łukasz Rosicki
+      </span>
+    </a>
+
+    <nav class="flex items-center gap-6">
+      {navItems.map(item => (
+        <a 
+          href={item.href} 
+          class="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors"
+        >
+          {item.label}
+        </a>
+      ))}
+      <a 
+        href="https://github.com/lukaszrosicki" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="text-sm font-medium bg-slate-900 text-white px-3 py-1.5 rounded hover:bg-slate-800 transition-colors"
+      >
+        Source
+      </a>
+    </nav>
+  </div>
+</header>
