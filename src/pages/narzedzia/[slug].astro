@@ -22,12 +22,21 @@ const { Content } = await tool.render();
     <Content />
   </div>
 
-  <div id="dynamic-tool-root">
-    </div>
+  <div id="dynamic-tool-root"></div>
 
   {tool.data.scriptPath && (
-    // Używamy dyrektywy define:vars lub standardowego importu hoisted, 
-    // dla pełnej elastyczności ładujemy skrypt kliencki przez tag script:
-    <script is:inline src={tool.data.scriptPath}></script>
+    // Przekazujemy ścieżkę do datasetu, aby skrypt kliencki mógł ją zaimportować
+    <script is:inline data-script={tool.data.scriptPath}>
+      const scriptPath = document.currentScript.getAttribute('data-script');
+      if (scriptPath) {
+        // Dynamiczny import ESM po stronie przeglądarki
+        import(scriptPath)
+          .then(module => {
+            // Jeśli eksportujesz funkcję inicjalizującą, np. init()
+            if (module.init) module.init();
+          })
+          .catch(err => console.error("Błąd ładowania skryptu narzędzia:", err));
+      }
+    </script>
   )}
 </Layout>
