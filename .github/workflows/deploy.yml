@@ -1,24 +1,31 @@
 # .github/workflows/deploy.yml
-name: Deploy do GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ] # Wyzwalaj po pushu do gałęzi głównej
+    branches: [ main ]
+  workflow_dispatch:
 
+# Ustawienie uprawnień wymaganych do zapisu i wdrożenia Pages przez token GITHUB_TOKEN
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Zarządzanie współbieżnością: anuluje trwające buildy, jeśli leci nowy commit
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
+env:
+  BUILD_PATH: "."
+
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -34,17 +41,20 @@ jobs:
         run: npm run build
 
       - name: Upload artifact
+        # Oficjalna akcja pakująca folder dist dla GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ${{ env.BUILD_PATH }}/dist
 
   deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
-    runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
+        # Oficjalna akcja wdrażająca spakowany wcześniej artefakt
         uses: actions/deploy-pages@v4
