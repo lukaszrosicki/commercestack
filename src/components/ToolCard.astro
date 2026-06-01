@@ -1,0 +1,32 @@
+---
+// src/components/ToolCard.astro
+interface Props {
+  title: string;
+  category: string;
+  slug: string;
+}
+
+const { title, category, slug } = Astro.props;
+---
+<div class="tool-card" data-category={category}>
+  <h3>{title}</h3>
+  <span class="badge">{category}</span>
+  <a href={`/narzedzia/${slug}`} class="btn">Uruchom</a>
+</div>
+
+<style>
+  /* Scoped CSS - style działają tylko w obrębie tego komponentu */
+  .tool-card {
+    border: 1px solid #333;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: #1a1a1a;
+  }
+  .badge {
+    display: inline-block;
+    background: #007acc;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+  }
+</style>

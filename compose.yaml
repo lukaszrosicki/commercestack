@@ -1,0 +1,14 @@
+# compose.yaml
+services:
+  astro:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules # Izolacja node_modules wewnątrz kontenera (kluczowe na Windows)
+    ports:
+      - "4321:4321"
+    environment:
+      - HOST=0.0.0.0 # Wymagane, aby Astro nasłuchiwało na zewnątrz kontenera
+    command: npm run dev

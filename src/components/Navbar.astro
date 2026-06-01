@@ -1,0 +1,26 @@
+---
+// src/components/Navbar.astro
+---
+<nav class="navbar">
+  <a href="/" class="logo">Łukasz Rosicki</a>
+  <div class="links">
+    <a href="/o-projekcie">O projekcie</a>
+    <a href="/narzedzia">Narzędzia</a>
+    <a href="/kontakt">Kontakt</a>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: #111;
+    border-bottom: 1px solid #222;
+  }
+  .links a {
+    margin-left: 1rem;
+    color: #fff;
+    text-decoration: none;
+  }
+</style>
