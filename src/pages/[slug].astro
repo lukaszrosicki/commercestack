@@ -1,12 +1,13 @@
 ---
 // src/pages/[slug].astro
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content'; // DODAJ IMPORT TYPU
 import Layout from '../layouts/Layout.astro';
 
-// Generowanie ścieżek statycznych na podstawie plików w content/pages
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
-  return pages.map(page => ({
+  // Jawne określenie typu dla 'page' jako CollectionEntry<'pages'>
+  return pages.map((page: CollectionEntry<'pages'>) => ({
     params: { slug: page.slug },
     props: { page },
   }));

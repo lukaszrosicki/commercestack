@@ -1,11 +1,13 @@
 ---
 // src/pages/narzedzia/[slug].astro
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content'; // DODAJ IMPORT TYPU
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools');
-  return tools.map(tool => ({
+  // Jawne określenie typu dla 'tool' jako CollectionEntry<'tools'>
+  return tools.map((tool: CollectionEntry<'tools'>) => ({
     params: { slug: tool.slug },
     props: { tool },
   }));
