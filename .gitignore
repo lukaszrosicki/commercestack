@@ -1,0 +1,25 @@
+# .gitignore
+
+# Zależności i pakiety (kluczowe w tym przypadku!)
+node_modules/
+/dist/
+
+# Pliki generowane automatycznie przez Astro
+.astro/
+
+# Cache i logi systemowe
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Pliki środowiskowe (zawierające sekrety i klucze API)
+.env
+.env.production
+.env.development
+.env.local
+.env.*.local
+
+# Pliki systemowe OS
+.DS_Store
+Thumbs.db
