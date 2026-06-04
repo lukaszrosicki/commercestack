@@ -57,29 +57,33 @@ const featuredTools = allTools.slice(0, 3);
     </div>
   </section>
 
-  <section class="py-12">
-    <div class="flex justify-between items-end mb-8">
-      <div>
-        <h2 class="text-2xl font-bold tracking-tight text-slate-900">Moduły analityczne i narzędzia</h2>
-        <p class="text-slate-500 text-sm mt-1">Skrypty i aplikacje DSP zintegrowane bezpośrednio w architekturze statycznej.</p>
-      </div>
-      <a href="/narzedzia" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors hidden sm:block">
-        Zobacz wszystkie &rarr;
-      </a>
+ <section class="py-12">
+  <div class="flex justify-between items-end mb-8">
+    <div>
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900">Moduły analityczne i narzędzia</h2>
+      <p class="text-slate-500 text-sm mt-1">Skrypty i aplikacje DSP zintegrowane bezpośrednio w architekturze statycznej.</p>
     </div>
+    <a href="/narzedzia" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors hidden sm:block">
+      Zobacz wszystkie &rarr;
+    </a>
+  </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {featuredTools.length > 0 ? (
-        featuredTools.map((tool) => (
-          <ToolCard tool={tool} />
-        ))
-      ) : (
-        <div class="col-span-3 border border-dashed border-slate-200 rounded-xl p-8 text-center text-slate-400 text-sm">
-          Brak narzędzi w kolekcji `src/content/tools/`. Dodaj plik markdown, aby go tu zobaczyć.
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {featuredTools.length > 0 ? (
+      /* Pętla mapująca wyłącznie tablicę featuredTools (maksymalnie 3 elementy) */
+      featuredTools.map((singleTool) => (
+        <div class="tool-item-wrapper" data-category={singleTool.data.category}>
+          {/* Przekazujemy pojedynczy obiekt narzędzia do komponentu */}
+          <ToolCard tool={singleTool} /> 
         </div>
-      )}
-    </div>
-  </section>
+      ))
+    ) : (
+      <div class="col-span-3 border border-dashed border-slate-200 rounded-xl p-8 text-center text-slate-400 text-sm">
+        Brak narzędzi w kolekcji `src/content/tools/`. Dodaj plik markdown, aby go tu zobaczyć.
+      </div>
+    )}
+  </div>
+</section>
 
   <section id="about" class="py-12 border-t border-slate-200">
     <div class="max-w-3xl">
