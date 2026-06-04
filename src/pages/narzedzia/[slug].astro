@@ -1,19 +1,22 @@
 ---
-// src/pages/narzedzia/[slug].astro
 import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content'; // DODAJ IMPORT TYPU
+import type { CollectionEntry } from 'astro:content'; // Zapewnienie stałego mapowania typów dostarczanych przez astro sync[cite: 1]
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools');
-  // Jawne określenie typu dla 'tool' jako CollectionEntry<'tools'>
   return tools.map((tool: CollectionEntry<'tools'>) => ({
     params: { slug: tool.slug },
     props: { tool },
   }));
 }
 
-const { tool } = Astro.props;
+// Eliminacja typu 'never' poprzez jawne określenie struktury propsów wejściowych
+interface Props {
+  tool: CollectionEntry<'tools'>;
+}
+
+const { tool } = Astro.props as Props;
 const { Content } = await tool.render();
 ---
 <Layout title={tool.data.title}>
@@ -27,14 +30,11 @@ const { Content } = await tool.render();
   <div id="dynamic-tool-root"></div>
 
   {tool.data.scriptPath && (
-    // Przekazujemy ścieżkę do datasetu, aby skrypt kliencki mógł ją zaimportować
     <script is:inline data-script={tool.data.scriptPath}>
-      const scriptPath = document.currentScript.getAttribute('data-script');
+      const scriptPath = document.currentScript?.getAttribute('data-script');
       if (scriptPath) {
-        // Dynamiczny import ESM po stronie przeglądarki
         import(scriptPath)
           .then(module => {
-            // Jeśli eksportujesz funkcję inicjalizującą, np. init()
             if (module.init) module.init();
           })
           .catch(err => console.error("Błąd ładowania skryptu narzędzia:", err));

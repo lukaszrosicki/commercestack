@@ -1,30 +1,28 @@
 ---
-// src/pages/narzedzia/index.astro
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content'; // Definicja typów zapobiegająca niejawnemu typowaniu 'any'[cite: 1]
 import Layout from '../../layouts/Layout.astro';
-import ToolCard from '../../components/ToolCard.astro'; // Import komponentu
+import ToolCard from '../../components/ToolCard.astro'; //[cite: 1]
 
 const tools = await getCollection('tools');
-const categories = [...new Set(tools.map(t => t.data.category))];
+// Bezpieczne mapowanie typów wewnątrz konstruktora unikalnych kategorii danych
+const categories = [...new Set(tools.map((t: CollectionEntry<'tools'>) => t.data.category))];
 ---
 <Layout title="Narzędzia">
   <h1>Moje Narzędzia</h1>
   
   <div class="filters">
     <button class="filter-btn" data-category="all">Wszystkie</button>
-    {categories.map(cat => (
+    {categories.map((cat) => (
       <button class="filter-btn" data-category={cat}>{cat}</button>
     ))}
   </div>
 
   <div class="tools-grid">
-    {tools.map(tool => (
+    {tools.map((tool: CollectionEntry<'tools'>) => (
       <div class="tool-item-wrapper" data-category={tool.data.category}>
-        <ToolCard 
-          title={tool.data.title} 
-          category={tool.data.category} 
-          slug={tool.slug} 
-        />
+        {/* Usunięto pojedyncze parametry; przekazujemy cały obiekt tool wymagany przez komponent ToolCard[cite: 1] */}
+        <ToolCard tool={tool} /> 
       </div>
     ))}
   </div>

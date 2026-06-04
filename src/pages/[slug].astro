@@ -1,19 +1,22 @@
 ---
-// src/pages/[slug].astro
 import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content'; // DODAJ IMPORT TYPU
+import type { CollectionEntry } from 'astro:content'; // Jawny import typu dla rekordów kolekcji
 import Layout from '../layouts/Layout.astro';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
-  // Jawne określenie typu dla 'page' jako CollectionEntry<'pages'>
   return pages.map((page: CollectionEntry<'pages'>) => ({
     params: { slug: page.slug },
     props: { page },
   }));
 }
 
-const { page } = Astro.props;
+// Definicja kontraktu typów dla właściwości komponentu
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+
+const { page } = Astro.props as Props; // Rzutowanie typu na zdefiniowany interfejs
 const { Content } = await page.render();
 ---
 <Layout title={page.data.title}>

@@ -2,6 +2,7 @@
 // src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content'; // <<< DODAJ TĘ LINIĘ
 import ToolCard from '../components/ToolCard.astro';
 
 // Pobieramy kolekcję narzędzi (bierzemy max 3 najnowsze na stronę główną)
@@ -70,18 +71,16 @@ const featuredTools = allTools.slice(0, 3);
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     {featuredTools.length > 0 ? (
-      /* Pętla mapująca wyłącznie tablicę featuredTools (maksymalnie 3 elementy) */
-      featuredTools.map((singleTool) => (
-        <div class="tool-item-wrapper" data-category={singleTool.data.category}>
-          {/* Przekazujemy pojedynczy obiekt narzędzia do komponentu */}
-          <ToolCard tool={singleTool} /> 
-        </div>
-      ))
-    ) : (
-      <div class="col-span-3 border border-dashed border-slate-200 rounded-xl p-8 text-center text-slate-400 text-sm">
-        Brak narzędzi w kolekcji `src/content/tools/`. Dodaj plik markdown, aby go tu zobaczyć.
-      </div>
-    )}
+  featuredTools.map((singleTool: CollectionEntry<'tools'>) => (
+    <div class="tool-item-wrapper" data-category={singleTool.data.category}>
+      <ToolCard tool={singleTool} /> 
+    </div>
+  ))
+) : (
+  <div class="col-span-3 border border-dashed border-slate-200 rounded-xl p-8 text-center text-slate-400 text-sm">
+    Brak narzędzi w kolekcji `src/content/tools/`. Dodaj plik markdown, aby go tu zobaczyć.
+  </div>
+)}
   </div>
 </section>
 
