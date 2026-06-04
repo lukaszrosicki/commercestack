@@ -3,13 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Twoje dotychczasowe globalne style przeniesione do warstwy bazowej Tailwinda */
 @layer base {
   body {
-    @apply bg-[#050505] text-[#e5e5e5] font-sans m-0;
-  }
-  
-  .container {
-    @apply max-width[1200px] mx-auto p-8;
+    /* Konfiguracja tła i koloru tekstu zgodna z Twoim layoutem */
+    @apply bg-slate-50 text-slate-900 antialiased;
   }
 }
