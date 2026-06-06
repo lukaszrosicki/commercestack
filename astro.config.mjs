@@ -13,6 +13,6 @@ export default defineConfig({
       // dostarcza dyrektywy @tailwind bezpośrednio przez warstwę PostCSS
       applyBaseStyles: false, 
     }),
-    astroIcons(),
+    astroIcon(),
   ],
 });
