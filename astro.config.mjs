@@ -1,6 +1,7 @@
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind'; //[cite: 1]
+import tailwind from '@astrojs/tailwind';
+import astroIcons from 'astro-icons';
 
 export default defineConfig({
   site: 'https://lukaszrosicki.github.io', //[cite: 1]
@@ -12,5 +13,6 @@ export default defineConfig({
       // dostarcza dyrektywy @tailwind bezpośrednio przez warstwę PostCSS
       applyBaseStyles: false, 
     }),
+    astroIcons(),
   ],
 });
