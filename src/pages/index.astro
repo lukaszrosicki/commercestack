@@ -1,95 +1,160 @@
 ---
 // src/pages/index.astro
+// Integracja dynamicznej strony głównej z nowym Layoutem, kolekcją tools oraz wsparciem Dark Mode
 import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content'; // <<< DODAJ TĘ LINIĘ
 import ToolCard from '../components/ToolCard.astro';
+import { getCollection } from 'astro:content';
 
-// Pobieramy kolekcję narzędzi (bierzemy max 3 najnowsze na stronę główną)
-const allTools = await getCollection('tools');
-const featuredTools = allTools.slice(0, 3);
+// Pobieramy faktycznie istniejące dane z kolekcji zdefiniowanej w src/content/config.ts
+const tools = await getCollection('tools');
+
+// Generowanie obiektów próbnych (mock) na bazie struktury nowej kolekcji
+const mockTools = Array.from({ length: 12 }, (_, index) => {
+  const baseTool = tools[index % tools.length] || {
+    id: `test-${index}`,
+    slug: `mock-slug-${index}`,
+    data: {
+      title: `Przykładowe Narzędzie ${index + 1}`,
+      category: "DSP",
+    }
+  };
+
+  return {
+    ...baseTool,
+    slug: `${baseTool.slug}-${index}`,
+    data: {
+      ...baseTool.data,
+      title: index < tools.length ? baseTool.data.title : `Przykładowe Narzędzie ${index + 1}`
+    }
+  };
+});
+
+// Dynamiczne wyciąganie unikalnych kategorii z danych (Single Source of Truth)
+const categories = [...new Set(mockTools.map(t => t.data.category.toLowerCase()))];
 ---
 
-<Layout title="dr Łukasz Rosicki | Strona Domowa">
-  <section class="py-12 md:py-20 border-b border-slate-200">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
-      <div class="md:col-span-2 space-y-6">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold tracking-wide uppercase">
-          ⚡ IT Engineer & Researcher
+<Layout title="CStack.eu - Panel Narzędzi Inżynierskich">
+  <div class="py-12 sm:py-16">
+    
+    {/* Sekcja Hero - Adaptacja typografii i przejść motywów */}
+    <section class="text-center max-w-3xl mx-auto mb-16">
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-6 transition-colors">
+        Zoptymalizuj swój <span class="text-orange-500">workflow</span>.
+      </h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed transition-colors">
+        Zbiór darmowych, minimalistycznych narzędzi inżynierskich, kalkulatorów systemowych oraz skryptów analitycznych ułatwiających przetwarzanie danych i modelowanie.
+      </p>
+    </section>
+
+    {/* Sekcja Kontrolna - Wyszukiwarka i Filtry */}
+    <section class="max-w-2xl mx-auto mb-16 px-2">
+      <div class="relative group">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          {/* Natywna ikona lupki inline SVG (Eliminacja astro-icon) */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="text-slate-400 group-focus-within:text-orange-500 transition-colors" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
         </div>
-        <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
-          Architektura Oprogramowania, <br class="hidden sm:inline"/>
-          Przetwarzanie Danych i Systemy IT
-        </h1>
-        <p class="text-lg text-slate-600 max-w-2xl leading-relaxed">
-          Witaj na mojej platformie inżynieryjnej. Łączę akademicką precyzję z produkcyjnym podejściem do rozwoju systemów rozproszonych, analizy danych w Pythonie oraz nowoczesnych interfejsów webowych.
-        </p>
-        <div class="flex flex-wrap gap-4 pt-2">
-          <a href="/narzedzia" class="bg-indigo-600 text-white font-medium px-5 py-2.5 rounded-lg hover:bg-indigo-700 shadow-sm shadow-indigo-200 transition-all">
-            Uruchom Narzędzia DSP
-          </a>
-          <a href="#about" class="bg-white border border-slate-300 text-slate-700 font-medium px-5 py-2.5 rounded-lg hover:bg-slate-50 transition-colors">
-            O projekcie
-          </a>
-        </div>
+        <input 
+          id="search-input"
+          type="text" 
+          placeholder="Znajdź narzędzie... np. analizator danych" 
+          class="block w-full pl-12 pr-4 py-4 bg-white border border-slate-200 dark:bg-slate-900 dark:border-slate-800 rounded-2xl leading-5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 sm:text-sm transition-all shadow-sm"
+        />
       </div>
       
-      <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-        <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Core Tech Stack</h3>
-        <ul class="space-y-3 font-mono text-sm">
-          <li class="flex justify-between border-b border-slate-100 pb-2">
-            <span class="text-slate-600">Frontend:</span>
-            <span class="text-indigo-600 font-semibold">Astro + Tailwind</span>
-          </li>
-          <li class="flex justify-between border-b border-slate-100 pb-2">
-            <span class="text-slate-600">Headless Backend:</span>
-            <span class="text-indigo-600 font-semibold">Payload CMS</span>
-          </li>
-          <li class="flex justify-between border-b border-slate-100 pb-2">
-            <span class="text-slate-600">Languages:</span>
-            <span class="text-slate-900 font-semibold">TS / JS / Python</span>
-          </li>
-          <li class="flex justify-between">
-            <span class="text-slate-600">Environment:</span>
-            <span class="text-emerald-600 font-semibold">Docker / CI/CD</span>
-          </li>
-        </ul>
+      {/* Kontenery filtrów z reaktywnym mapowaniem stylów light/dark */}
+      <div class="flex flex-wrap justify-center gap-2.5 mt-6">
+        <button 
+          data-category="wszystko" 
+          class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-colors bg-slate-900 text-white hover:bg-slate-800 border border-transparent dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200"
+        >
+          Wszystko
+        </button>
+        {categories.map(cat => (
+          <button 
+            data-category={cat} 
+            class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-colors bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            {cat.toUpperCase()}
+          </button>
+        ))}
       </div>
-    </div>
-  </section>
+    </section>
 
- <section class="py-12">
-  <div class="flex justify-between items-end mb-8">
-    <div>
-      <h2 class="text-2xl font-bold tracking-tight text-slate-900">Moduły analityczne i narzędzia</h2>
-      <p class="text-slate-500 text-sm mt-1">Skrypty i aplikacje DSP zintegrowane bezpośrednio w architekturze statycznej.</p>
-    </div>
-    <a href="/narzedzia" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors hidden sm:block">
-      Zobacz wszystkie &rarr;
-    </a>
-  </div>
+    {/* Siatka Kart - Implementacja komponentu ToolCard */}
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {mockTools.map((tool) => (
+        <div 
+          class="tool-card-wrapper h-full transition-all duration-200" 
+          data-category={tool.data.category?.toLowerCase()} 
+          data-title={tool.data.title?.toLowerCase()}
+        >
+          <ToolCard 
+            title={tool.data.title}
+            category={tool.data.category}
+            slug={tool.slug} 
+          />
+        </div>
+      ))}
+    </section>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    {featuredTools.length > 0 ? (
-  featuredTools.map((singleTool: CollectionEntry<'tools'>) => (
-    <div class="tool-item-wrapper" data-category={singleTool.data.category}>
-      <ToolCard tool={singleTool} /> 
-    </div>
-  ))
-) : (
-  <div class="col-span-3 border border-dashed border-slate-200 rounded-xl p-8 text-center text-slate-400 text-sm">
-    Brak narzędzi w kolekcji `src/content/tools/`. Dodaj plik markdown, aby go tu zobaczyć.
   </div>
-)}
-  </div>
-</section>
-
-  <section id="about" class="py-12 border-t border-slate-200">
-    <div class="max-w-3xl">
-      <h2 class="text-xl font-bold text-slate-900 mb-4">O projekcie domowym</h2>
-      <p class="text-slate-600 text-sm leading-relaxed mb-4">
-        Ta strona pełni rolę hybrydowego środowiska testowego oraz wizytówki inżynierskiej. Dzięki architekturze JAMstack (Astro) zapewnia zerowy narzut wydajnościowy po stronie klienta, podczas gdy Payload CMS zarządza dynamicznymi strukturami danych i meta-opisami narzędzi naukowo-technicznych.
-      </p>
-    </div>
-  </section>
 </Layout>
+
+<script>
+  // Logika filtracji działająca w warstwie klienta (Client-Side Hydration)
+  const initFiltering = () => {
+    const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const toolCards = document.querySelectorAll('.tool-card-wrapper') as NodeListOf<HTMLElement>;
+
+    let currentCategory = 'wszystko';
+
+    const filterCards = () => {
+      const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+      
+      toolCards.forEach((card) => {
+        const title = card.getAttribute('data-title') || '';
+        const category = card.getAttribute('data-category') || '';
+        
+        const matchesSearch = title.includes(searchTerm);
+        const matchesCategory = currentCategory === 'wszystko' || category === currentCategory;
+        
+        if (matchesSearch && matchesCategory) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    };
+
+    if (searchInput) {
+      searchInput.addEventListener('input', filterCards);
+    }
+
+    // Klasy Tailwinda wstrzykiwane dynamicznie przy zmianie stanów aktywności
+    const activeClasses = ['bg-slate-900', 'text-white', 'hover:bg-slate-800', 'border-transparent', 'dark:bg-slate-100', 'dark:text-slate-950', 'dark:hover:bg-slate-200'];
+    const inactiveClasses = ['bg-white', 'border-slate-200', 'text-slate-600', 'hover:border-slate-300', 'hover:bg-slate-50', 'dark:bg-slate-900', 'dark:border-slate-800', 'dark:text-slate-300', 'dark:hover:bg-slate-800'];
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        filterButtons.forEach(b => {
+          b.classList.remove(...activeClasses);
+          b.classList.add(...inactiveClasses);
+        });
+        
+        const target = e.currentTarget as HTMLButtonElement;
+        target.classList.remove(...inactiveClasses);
+        target.classList.add(...activeClasses);
+        
+        currentCategory = target.getAttribute('data-category') || 'wszystko';
+        filterCards();
+      });
+    });
+  };
+
+  // Uruchomienie skryptu (kompatybilne z przeładowaniami i nawigacją SPA)
+  initFiltering();
+  document.addEventListener("astro:after-swap", initFiltering);
+</script>

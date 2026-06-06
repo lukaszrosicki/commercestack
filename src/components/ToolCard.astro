@@ -1,21 +1,46 @@
 ---
 // src/components/ToolCard.astro
-import type { CollectionEntry } from 'astro:content';
-
+// Ścisła kontrola typów wejściowych dla komponentu karty narzędzia
 interface Props {
-  tool: CollectionEntry<'tools'>; // Definicja ścisłego typu z wygenerowanej kolekcji Astro
+  title: string;
+  category: string;
+  slug: string;
 }
 
-const { tool } = Astro.props;
-const { title, category } = tool.data;
-const slug = tool.slug;
+const { title, category, slug } = Astro.props;
+
+// Zabezpieczenie ścieżki bazowej dla routingu dynamicznego
+const base = import.meta.env.BASE_URL.endsWith('/') 
+  ? import.meta.env.BASE_URL 
+  : `${import.meta.env.BASE_URL}/`;
 ---
-<div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow" data-category={category}>
-  <div class="flex justify-between items-start mb-4">
-    <h3 class="text-lg font-bold text-slate-900">{title}</h3>
-    <span class="inline-block bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs px-2.5 py-1 rounded-md font-medium">{category}</span>
+
+<div class="border border-slate-200 dark:border-slate-800 p-6 rounded-2xl bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full group">
+  <div>
+    {/* Górny pasek: Kategoria jako Badge */}
+    <div class="mb-4">
+      <span class="inline-block text-xs font-semibold tracking-wider uppercase bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-2.5 py-1 rounded-md transition-colors">
+        {category}
+      </span>
+    </div>
+    
+    {/* Nagłówek narzędzia */}
+    <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-orange-500 dark:group-hover:text-orange-500 transition-colors mb-2">
+      {title}
+    </h3>
+    
+    <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
+      Uruchom wyspecjalizowany moduł i przejdź do panelu obliczeniowego.
+    </p>
   </div>
-  <a href={`/narzedzia/${slug}`} class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors">
-    Uruchom narzędzie
-  </a>
+
+  {/* Przycisk akcji */}
+  <div class="mt-6">
+    <a 
+      href={`${base}narzedzia/${slug}`} 
+      class="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200 transition-all text-center"
+    >
+      Uruchom narzędzie
+    </a>
+  </div>
 </div>
