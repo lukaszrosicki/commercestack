@@ -1,18 +1,23 @@
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
-import astroIcons from 'astro-icons';
 
 export default defineConfig({
-  site: 'https://lukaszrosicki.github.io', //[cite: 1]
-  base: '/commercestack', // Mapowanie bazy pod GitHub Pages podkatalog
-  output: 'static', //[cite: 1]
+  // Adres URL Twojej witryny docelowej na GitHub Pages
+  site: 'https://lukaszrosicki.github.io',
+  
+  // Krytyczne dla prawidłowego mapowania zasobów (CSS/JS) w podkatalogu repozytorium
+  base: '/commercestack',
+  
+  // Statyczna generacja stron (SSG) – optymalna pod GitHub Pages
+  output: 'static',
+  
   integrations: [
     tailwind({
-      // Wyciszamy automatyczne wstrzykiwanie, ponieważ plik global.css 
-      // dostarcza dyrektywy @tailwind bezpośrednio przez warstwę PostCSS
-      applyBaseStyles: false, 
+      // true (domyślnie): Astro automatycznie wstrzykuje style bazowe (@tailwind base, components, utilities).
+      // Jeśli posiadasz własny plik global.css z dyrektywami @tailwind i konfiguracją PostCSS,
+      // możesz zmienić tę wartość z powrotem na false.
+      applyBaseStyles: true,
     }),
-    astroIcon(),
   ],
 });

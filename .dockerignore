@@ -1,0 +1,10 @@
+# .dockerignore
+.git
+.astro
+node_modules
+dist
+.env
+.env.*
+*.log
+Dockerfile
+compose.yaml

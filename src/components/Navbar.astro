@@ -1,14 +1,17 @@
 ---
-// Integracja warstwy wizualnej CStack z obsługą BASE_URL i Dark Mode
-import { Icon } from 'astro-icon/components';
-
 // Zabezpieczenie ścieżek bazowych dla GitHub Pages / podkatalogów
 const base = import.meta.env.BASE_URL.endsWith('/') 
   ? import.meta.env.BASE_URL 
   : `${import.meta.env.BASE_URL}/`;
 
-// Spójna definicja linków (z mapowania technicznego wersji 2)
-const navItems = [
+// Definicja typów dla ścisłej kontroli kompilatora
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+// Rekonstrukcja struktury menu (Single Source of Truth dla odnośników)
+const navItems: NavItem[] = [
   { label: 'Narzędzia', href: `${base}narzedzia` },
   { label: 'O projekcie', href: `${base}o-projekcie` },
   { label: 'Kontakt', href: `${base}kontakt` },
@@ -18,7 +21,7 @@ const navItems = [
 <header class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80 transition-colors duration-200">
   <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
     
-    {/* Sekcja Lewa: Branding i Nawigacja Desktopowa */}
+    <!-- Sekcja Lewa: Branding -->
     <div class="flex items-center gap-10">
       <div class="flex items-center">
         <a href={base} class="text-xl font-bold tracking-tight text-slate-900 dark:text-white transition-colors hover:text-slate-700 dark:hover:text-slate-300">
@@ -26,6 +29,7 @@ const navItems = [
         </a>
       </div>
       
+      <!-- Nawigacja Desktopowa -->
       <nav class="hidden md:flex items-center gap-6">
         {navItems.map(item => (
           <a 
@@ -38,19 +42,26 @@ const navItems = [
       </nav>
     </div>
 
-    {/* Sekcja Prawa: Integracje społecznościowe, Dark Mode i Hamburger */}
+    <!-- Sekcja Prawa: Narzędzia interfejsu -->
     <div class="flex items-center gap-2 sm:gap-4">
-      {/* Przełącznik Dark Mode */}
+      
+      <!-- Przełącznik Dark Mode (Natywne SVGs inline eliminujące asynchroniczny fetch) -->
       <button
         id="theme-toggle"
         class="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-orange-500 dark:text-slate-400 dark:hover:text-orange-500 transition-colors"
         aria-label="Zmień motyw"
       >
-        <Icon name="bi:sun" class="w-5 h-5 hidden dark:block" />
-        <Icon name="bi:moon" class="w-5 h-5 block dark:hidden" />
+        <!-- Ikona Słońca (Widoczna tylko w trybie Dark) -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="hidden dark:block" viewBox="0 0 16 16">
+          <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
+        </svg>
+        <!-- Ikona Księżyca (Widoczna tylko w trybie Light) -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="block dark:hidden" viewBox="0 0 16 16">
+          <path d="M10.794 3.148a.217.217 0 0 1 .412-.02c.742 2.31.046 4.77-1.778 6.594-1.825 1.822-4.28 2.51-6.593 1.768a.217.217 0 0 1-.02-.412 1.582 1.582 0 0 0 1.187-.13c.83-.437 1.405-1.168 1.586-2.106.33-1.714-.42-3.483-1.846-4.504a1.582 1.582 0 0 0-.131 1.187c-.437.83-1.168 1.405-2.106 1.586-1.714.33-3.483-.42-4.504-1.846a1.581 1.581 0 0 0 1.187-.131c.83-.437 1.405-1.168 1.586-2.106a3.483 3.483 0 0 0-1.846-4.504l.117-.03A7 7 0 0 1 10.794 3.148mM1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8"/>
+        </svg>
       </button>
 
-      {/* LinkedIn Link */}
+      <!-- LinkedIn (Natywny link z optymalizacją rel pod kątem bezpieczeństwa) -->
       <a 
         href="https://linkedin.com/in/lukaszrosicki" 
         target="_blank" 
@@ -58,21 +69,25 @@ const navItems = [
         class="inline-flex items-center justify-center p-2 rounded-lg text-slate-600 hover:text-[#0077B5] dark:text-slate-400 dark:hover:text-[#0077B5] transition-colors" 
         aria-label="LinkedIn"
       >
-        <Icon name="bi:linkedin" class="w-5 h-5" />
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.426 2.4 4.134c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"/>
+        </svg>
       </a>
 
-      {/* Przycisk Menu Mobilnego */}
+      <!-- Przycisk Menu Mobilnego -->
       <button 
         id="mobile-menu-btn" 
         class="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-slate-900 hover:text-orange-500 dark:text-white dark:hover:text-orange-500 transition-colors" 
         aria-label="Otwórz menu"
       >
-        <Icon name="bi:list" class="w-5 h-5" /> 
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+        </svg>
       </button>
     </div>
   </div>
 
-  {/* Menu Mobilne (Ukryte domyślnie) */}
+  <!-- Menu Mobilne -->
   <div 
     id="mobile-menu" 
     class="hidden md:hidden border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 absolute top-full left-0 w-full shadow-lg transition-all duration-200"
@@ -91,18 +106,18 @@ const navItems = [
 </header>
 
 <script>
-  // Logika obsługi zdarzeń interfejsu użytkownika (zgodna z architekturą wysp Astro)
-  const setupNavbar = () => {
+  // Izolacja logiki interfejsu (Scoped Script)
+  const initNavbar = () => {
     const mobileMenuBtn = document.getElementById("mobile-menu-btn");
     const mobileMenu = document.getElementById("mobile-menu");
     const themeToggleBtn = document.getElementById("theme-toggle");
 
-    // Toggle menu mobilnego
+    // Obsługa Menu Mobilnego
     mobileMenuBtn?.addEventListener("click", () => {
       mobileMenu?.classList.toggle("hidden");
     });
 
-    // Obsługa przełączania motywów (Local Storage + klasa .dark na dokumencie)
+    // Przełącznik mechanizmu Dark Mode (synchronizacja z localStorage)
     themeToggleBtn?.addEventListener("click", () => {
       if (document.documentElement.classList.contains("dark")) {
         document.documentElement.classList.remove("dark");
@@ -114,7 +129,7 @@ const navItems = [
     });
   };
 
-  // Uruchomienie skryptu przy ładowaniu i wsparcie dla View Transitions (jeśli wdrożone)
-  setupNavbar();
-  document.addEventListener("astro:after-swap", setupNavbar);
+  // Cykl inicjalizacji (odporny na mechanizmy nawigacji spa / klasyczne przeładowania)
+  initNavbar();
+  document.addEventListener("astro:after-swap", initNavbar);
 </script>
