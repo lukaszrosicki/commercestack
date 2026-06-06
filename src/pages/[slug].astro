@@ -1,27 +1,44 @@
 ---
+// src/pages/[...slug].astro
+// Dostosowanie do API Astro v4.15.0 i ścisłe typowanie dla kompilatora TypeScript
 import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content'; // Jawny import typu dla rekordów kolekcji
+import type { CollectionEntry } from 'astro:content'; // Import typu wpisu kolekcji
 import Layout from '../layouts/Layout.astro';
 
 export async function getStaticPaths() {
+  // Pobieramy kolekcję stron zdefiniowaną w src/content/config.ts
   const pages = await getCollection('pages');
-  return pages.map((page: CollectionEntry<'pages'>) => ({
-    params: { slug: page.slug },
-    props: { page },
-  }));
+  
+  return pages.map((page: CollectionEntry<'pages'>) => {
+    // Sanityzacja sluga: w Astro v4 używamy page.slug zamiast analizy page.id
+    const slug = page.slug === 'index' ? undefined : page.slug;
+
+    return {
+      params: { slug },
+      props: { page },
+    };
+  });
 }
 
-// Definicja kontraktu typów dla właściwości komponentu
+// Ścisłe określenie typu dla propsów komponentu Astro
 interface Props {
   page: CollectionEntry<'pages'>;
 }
 
-const { page } = Astro.props as Props; // Rzutowanie typu na zdefiniowany interfejs
+const { page } = Astro.props;
+
+// W Astro v4.x funkcja render() jest metodą osadzoną bezpośrednio na obiekcie wpisu
 const { Content } = await page.render();
 ---
-<Layout title={page.data.title}>
-  <h1>{page.data.title}</h1>
-  <article>
-    <Content />
-  </article>
+
+<Layout title={page.data.title} description={page.data.description}>
+  <div class="py-12 sm:py-16">
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <article class="prose prose-slate dark:prose-invert prose-lg mx-auto prose-headings:text-slate-900 dark:prose-headings:text-white prose-a:text-orange-500 hover:prose-a:text-orange-600 prose-h1:font-extrabold prose-h1:text-4xl sm:prose-h1:text-5xl prose-h1:tracking-tight prose-h1:mb-8 transition-colors duration-200">
+        <Content />
+      </article>
+      
+    </main>
+  </div>
 </Layout>

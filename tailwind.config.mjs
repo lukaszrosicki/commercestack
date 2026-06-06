@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import typography from '@tailwindcss/typography';
 export default {
   darkMode: 'class',
   // Brak spacji wewnątrz nawiasów klamrowych jest krytyczny dla poprawnego działania reguł glob
@@ -11,5 +12,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [typography],
 }
