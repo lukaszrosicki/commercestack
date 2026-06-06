@@ -27,20 +27,29 @@ const {
     <meta name="description" content={description} />
 
     <script is:inline>
-      const getThemePreference = () => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
-        }
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      };
-      
-      const theme = getThemePreference();
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    </script>
+  const resolveInitialTheme = () => {
+    // 1. Sprawdzamy czy istnieje zapisany wybór użytkownika w bieżącej przeglądarce
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
+    }
+    
+    // 2. Jeśli brak zapisu, sprawdzamy preferencję systemową hosta (Media Query)
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    
+    // 3. Fallback nadrzędny - wymuszenie czystego trybu jasnego (Light Mode)
+    return 'light';
+  };
+
+  const currentTheme = resolveInitialTheme();
+  
+  if (currentTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+</script>
   </head>
   
   {/* Adaptacja stylów: czyste tło bg-white przechodzące w bg-slate-950 w trybie dark z płynną animacją */}

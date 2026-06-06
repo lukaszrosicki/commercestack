@@ -1,44 +1,170 @@
 ---
+// src/pages/narzedzia/[slug].astro
+// Kompletna korekta typowania eliminująca błędy typu 'never' dla kompilatora TypeScript
 import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content'; // Zapewnienie stałego mapowania typów dostarczanych przez astro sync[cite: 1]
+import type { CollectionEntry } from 'astro:content'; // Jawny import typu wpisu kolekcji
 import Layout from '../../layouts/Layout.astro';
+
+// Mapowanie statyczne komponentów na poziomie kompilacji bundlera Vite
+const dynamicComponents = import.meta.glob('../../components/dynamic/*.astro');
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools');
+  
+  // NAPRAWIONE: Dodano ścisłe typowanie parametru pętli (tool: CollectionEntry<'tools'>)
   return tools.map((tool: CollectionEntry<'tools'>) => ({
     params: { slug: tool.slug },
     props: { tool },
   }));
 }
 
-// Eliminacja typu 'never' poprzez jawne określenie struktury propsów wejściowych
+// NAPRAWIONE: Definicja interfejsu Props dla całego komponentu Astro
 interface Props {
   tool: CollectionEntry<'tools'>;
 }
 
-const { tool } = Astro.props as Props;
+// Bezpieczna destrukturyzacja dzięki otypowaniu Props powyżej
+const { tool } = Astro.props;
+const { title, category, excelLink } = tool.data;
+
+// Renderowanie dokumentacji Markdown skorelowanej z bieżącym slugiem
 const { Content } = await tool.render();
+
+// Zabezpieczenie ścieżek bazowych pod routing relatywny (np. /commercestack)
+const base = import.meta.env.BASE_URL.endsWith('/') 
+  ? import.meta.env.BASE_URL 
+  : `${import.meta.env.BASE_URL}/`;
+
+// Dynamiczne generowanie ścieżki do dedykowanego komponentu .astro na podstawie sluga pliku markdown
+const componentPath = `../../components/dynamic/${tool.slug}.astro`;
+const dynamicComponentLoader = dynamicComponents[componentPath];
+
+// Rezolucja modułu – jeśli komponent istnieje w src/components/dynamic/, zostanie wyrenderowany serwerowo
+const DynamicComponent = dynamicComponentLoader 
+  ? ((await dynamicComponentLoader()) as any).default 
+  : null;
 ---
-<Layout title={tool.data.title}>
-  <h1>Narzędzie: {tool.data.title}</h1>
-  <p>Kategoria: {tool.data.category}</p>
-  
-  <div class="markdown-body">
-    <Content />
+
+<Layout title={`${title} - CStack.eu`} description={`Uruchom narzędzie ${title} z kategorii ${category}.`}>
+  <div class="py-6 sm:py-10">
+    
+    {/* Pasek Nawigacyjny Breadcrumbs */}
+    <nav aria-label="Breadcrumb" class="flex items-center text-sm font-medium text-slate-500 mb-6 space-x-2 whitespace-nowrap overflow-x-auto">
+      <a href={base} class="hover:text-orange-500 transition-colors flex items-center dark:text-slate-400 dark:hover:text-orange-500">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 16 16">
+          <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
+        </svg>
+        Strona główna
+      </a>
+      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="text-slate-400 shrink-0" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+      </svg>
+      
+      <a href={`${base}narzedzia`} class="hover:text-orange-500 transition-colors dark:text-slate-400 dark:hover:text-orange-500">
+        Narzędzia
+      </a>
+      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="text-slate-400 shrink-0" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+      </svg>
+      <span class="text-slate-900 dark:text-slate-300 font-semibold truncate max-w-[200px] sm:max-w-none" aria-current="page">{title}</span>
+    </nav>
+    
+    {/* Sekcja Nagłówkowa Artykułu */}
+    <div class="max-w-3xl mb-10">
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4 transition-colors">
+        {title}
+      </h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400 transition-colors">
+        Uruchom wyspecjalizowany moduł inżynierski i przejdź bezpośrednio do panelu obliczeniowego.
+      </p>
+    </div>
+
+    {/* Główna Siatka Dwu-kolumnowa */}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div class="lg:col-span-8 space-y-12">
+        
+        {/* Renderowanie Warunkowe Komponentu Wyliczeniowego .astro */}
+        {DynamicComponent ? (
+          <DynamicComponent />
+        ) : (
+          <div class="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm transition-colors min-h-[350px]">
+            <div class="flex flex-col items-center justify-center p-12 text-center min-h-[300px]">
+              <div class="p-3 bg-white dark:bg-slate-800 rounded-full shadow-sm mb-4 border dark:border-slate-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-orange-500 animate-spin" viewBox="0 0 16 16">
+                  <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                </svg>
+              </div>
+              <p class="text-slate-700 dark:text-slate-300 font-semibold mb-1">Kalkulator w budowie...</p>
+              <p class="text-xs text-slate-400">Dedykowany interfejs dla {title} zostanie wkrótce zaimplementowany.</p>
+            </div>
+          </div>
+        )}
+
+        {/* Sekcja Dokumentacji Technicznej (Markdown) */}
+        <article class="prose prose-slate dark:prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:text-slate-900 dark:prose-headings:text-white prose-a:text-orange-500 hover:prose-a:text-orange-600 transition-colors">
+          <Content />
+        </article>
+      </div>
+
+      {/* Kolumna Prawa: Sidebar */}
+      <aside class="lg:col-span-4 sticky top-24 space-y-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm transition-colors">
+          <div class="flex items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center text-sm font-medium text-slate-600 dark:text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2 text-slate-400" viewBox="0 0 16 16">
+                <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
+              </svg> 
+              Kategoria
+            </div>
+            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 rounded-md">
+              {category}
+            </span>
+          </div>
+          
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center text-sm font-medium text-slate-600 dark:text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2 text-slate-400" viewBox="0 0 16 16">
+                <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zM5 5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1zm-4 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+              </svg> 
+              Status operacyjny
+            </div>
+            <span class="font-semibold text-emerald-600 dark:text-emerald-400 text-sm flex items-center">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+              Gotowy do użycia
+            </span>
+          </div>
+          
+          {excelLink && (
+            <a 
+              href={excelLink} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="flex items-center justify-center w-full px-4 py-3 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 font-semibold rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900 transition-colors text-sm text-center shadow-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 16 16">
+                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+              </svg>
+              Pobierz powiązany arkusz
+            </a>
+          )}
+        </div>
+
+        <div class="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-6 transition-colors">
+          <h3 class="font-bold text-slate-900 dark:text-white mb-2 flex items-center text-sm tracking-tight">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2 text-slate-400" viewBox="0 0 16 16">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
+            </svg>
+            Bądź na bieżąco
+          </h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+            Tworzę zaawansowane skrypty automatyzacji i kalkulatory inżynierskie. Zostaw maila, aby nie przegapić nowych modułów.
+          </p>
+          <input type="email" placeholder="Twój e-mail..." class="w-full px-4 py-2.5 bg-white border border-slate-200 dark:bg-slate-900 dark:border-slate-800 dark:text-white rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-sm" />
+          <button class="w-full px-4 py-2.5 bg-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200 text-white font-semibold rounded-lg hover:bg-slate-800 transition-colors text-xs uppercase tracking-wider shadow-sm">Zapisz się</button>
+        </div>
+      </aside>
+    </div>
+
   </div>
-
-  <div id="dynamic-tool-root"></div>
-
-  {tool.data.scriptPath && (
-    <script is:inline data-script={tool.data.scriptPath}>
-      const scriptPath = document.currentScript?.getAttribute('data-script');
-      if (scriptPath) {
-        import(scriptPath)
-          .then(module => {
-            if (module.init) module.init();
-          })
-          .catch(err => console.error("Błąd ładowania skryptu narzędzia:", err));
-      }
-    </script>
-  )}
 </Layout>

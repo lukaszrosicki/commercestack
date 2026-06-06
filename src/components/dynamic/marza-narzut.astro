@@ -1,0 +1,223 @@
+---
+// src/components/dynamic/marza-narzut.astro
+// Integracja warstwy wizualnej kalkulatora ze wsparciem Dark Mode i optymalizacją inline SVG
+---
+
+<div class="border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-sm overflow-hidden transition-colors duration-200">
+  
+  {/* Nagłówek kalkulatora (Górna belka systemowa) */}
+  <div class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between transition-colors">
+    <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Moduł Obliczeniowy Finanse</span>
+    
+    <div class="flex gap-1.5">
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+    </div>
+  </div>
+
+  {/* Główny Kontener Grid: Formularz (Lewo) + Wyniki (Prawo) */}
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8">
+    
+    {/* Kolumna Lewa: Pola wejściowe */}
+    <div class="lg:col-span-7 flex flex-col gap-6 pr-0 lg:pr-4">
+      
+      <div class="border-b border-slate-100 dark:border-slate-800 pb-3 transition-colors">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Dane wejściowe</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Wprowadź podstawowe parametry finansowe produktu.</p>
+      </div>
+      
+      {/* Input: Cena Zakupu */}
+      <div>
+        <label for="mc-purchase-price" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+          Cena zakupu netto (PLN)
+        </label>
+        <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+          <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-4 text-slate-400 dark:text-slate-500 transition-colors">
+            {/* Natywna ikona cash inline SVG */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z"/>
+              <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+            </svg>
+          </div>
+          <input 
+            type="number" 
+            id="mc-purchase-price" 
+            placeholder="np. 100" 
+            min="0" 
+            step="0.01"
+            class="w-full px-4 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" 
+          />
+        </div>
+      </div>
+
+      {/* Select: Stawka VAT */}
+      <div>
+        <label for="mc-vat-rate" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+          Stawka VAT
+        </label>
+        <div class="flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+          <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-4 text-slate-400 dark:text-slate-500 transition-colors">
+            {/* Natywna ikona percent inline SVG */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M13.442 2.558a2.416 2.416 0 1 0 0 4.832 2.416 2.416 0 0 0 0-4.832M10.12 5a3.416 3.416 0 1 1 6.832 0 3.416 3.416 0 0 1-6.832 0M2.558 11.12a2.416 2.416 0 1 0 0 4.832 2.416 2.416 0 0 0 0-4.832m-3.322 2.416a3.416 3.416 0 1 1 6.832 0 3.416 3.416 0 0 1-6.832 0M1.242 14.225a.5.5 0 0 1-.034-.706L13.516 1.058a.5.5 0 1 1 .74.674L1.948 14.19a.5.5 0 0 1-.706.035z"/>
+            </svg>
+          </div>
+          <select 
+            id="mc-vat-rate" 
+            class="w-full px-4 py-3 bg-transparent outline-none text-slate-700 dark:text-slate-300 text-sm cursor-pointer dark:bg-slate-950"
+          >
+            <option value="23">23% (Podstawowa)</option>
+            <option value="8">8% (Obniżona)</option>
+            <option value="5">5% (Obniżona)</option>
+            <option value="0">0% (Zwolniony)</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Toggles: Metoda kalkulacji */}
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Metoda kalkulacji</label>
+        <div class="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800/80 transition-colors">
+          <label class="flex-1 text-center cursor-pointer">
+            <input type="radio" name="mc-mode" value="margin" class="peer hidden" checked />
+            <div class="py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 rounded-lg peer-checked:bg-white dark:peer-checked:bg-slate-900 peer-checked:text-slate-900 dark:peer-checked:text-white peer-checked:shadow-sm transition-all">
+              Marża (%)
+            </div>
+          </label>
+          <label class="flex-1 text-center cursor-pointer">
+            <input type="radio" name="mc-mode" value="markup" class="peer hidden" />
+            <div class="py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 rounded-lg peer-checked:bg-white dark:peer-checked:bg-slate-900 peer-checked:text-slate-900 dark:peer-checked:text-white peer-checked:shadow-sm transition-all">
+              Narzut (%)
+            </div>
+          </label>
+        </div>
+      </div>
+
+      {/* Input: Wartość procentowa */}
+      <div>
+        <label for="mc-percentage" id="mc-percentage-label" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+          Pożądana marża (%)
+        </label>
+        <div class="flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+          <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-4 text-slate-400 dark:text-slate-500 transition-colors">
+            {/* Natywna ikona sliders inline SVG */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1h-2.05a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1H6.95a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1zm9.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1h-2.05a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1z"/>
+            </svg>
+          </div>
+          <input 
+            type="number" 
+            id="mc-percentage" 
+            placeholder="np. 20" 
+            min="0" 
+            max="99.9"
+            step="0.1"
+            class="w-full px-4 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" 
+          />
+        </div>
+      </div>
+
+    </div>
+
+    {/* Kolumna Prawa: Warstwa prezentacji wyników (Dashboard) */}
+    <div class="lg:col-span-5 bg-slate-50 dark:bg-slate-900/60 rounded-xl p-6 sm:p-8 flex flex-col justify-center gap-6 border border-slate-200 dark:border-slate-800/80 transition-colors">
+      
+      <div>
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Cena sprzedaży netto</p>
+        <p class="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight transition-colors" id="mc-res-net-sales">0,00 zł</p>
+      </div>
+      
+      <div>
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Cena sprzedaży brutto</p>
+        <p class="text-2xl font-extrabold text-slate-800 dark:text-slate-200 transition-colors" id="mc-res-gross-sales">0,00 zł</p>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4 pt-6 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <div>
+          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Zysk netto</p>
+          <p class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 transition-colors" id="mc-res-profit">0,00 zł</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Kwota VAT</p>
+          <p class="text-xl font-bold text-slate-600 dark:text-slate-400 transition-colors" id="mc-res-vat">0,00 zł</p>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
+
+<script>
+  // Logika obliczeniowa z pełnym wsparciem dla View Transitions (island logic)
+  const initMarginCalculator = () => {
+    const purchaseInput = document.getElementById('mc-purchase-price') as HTMLInputElement | null;
+    const vatInput = document.getElementById('mc-vat-rate') as HTMLSelectElement | null;
+    const percentageInput = document.getElementById('mc-percentage') as HTMLInputElement | null;
+    const radioModes = document.querySelectorAll('input[name="mc-mode"]') as NodeListOf<HTMLInputElement>;
+    const labelElement = document.getElementById('mc-percentage-label') as HTMLLabelElement | null;
+
+    const outNetSales = document.getElementById('mc-res-net-sales');
+    const outGrossSales = document.getElementById('mc-res-gross-sales');
+    const outProfit = document.getElementById('mc-res-profit');
+    const outVat = document.getElementById('mc-res-vat');
+
+    // Bezpieczny formater walutowy działający w standardzie i18n
+    const formatCurrency = (value: number) => {
+      if (isNaN(value) || !isFinite(value) || value < 0) return "0,00 zł";
+      return new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(value);
+    };
+
+    const runCalculation = () => {
+      if (!purchaseInput || !vatInput || !percentageInput) return;
+
+      const purchasePrice = parseFloat(purchaseInput.value) || 0;
+      const vatRate = parseFloat(vatInput.value) || 0;
+      const percentage = parseFloat(percentageInput.value) || 0;
+      
+      const activeModeElement = document.querySelector('input[name="mc-mode"]:checked') as HTMLInputElement | null;
+      const mode = activeModeElement ? activeModeElement.value : 'margin';
+
+      let netSales = 0;
+
+      if (mode === 'margin') {
+        // Kontrola dzielenia przez zero przy marży zbliżającej się do 100%
+        const safeMargin = percentage >= 100 ? 99.9 : percentage;
+        netSales = purchasePrice / (1 - (safeMargin / 100));
+      } else {
+        netSales = purchasePrice * (1 + (percentage / 100));
+      }
+
+      const profit = netSales - purchasePrice;
+      const vatAmount = netSales * (vatRate / 100);
+      const grossSales = netSales + vatAmount;
+
+      if (outNetSales) outNetSales.textContent = formatCurrency(netSales);
+      if (outGrossSales) outGrossSales.textContent = formatCurrency(grossSales);
+      if (outProfit) outProfit.textContent = formatCurrency(profit);
+      if (outVat) outVat.textContent = formatCurrency(vatAmount);
+    };
+
+    const toggleLabels = () => {
+      const activeModeElement = document.querySelector('input[name="mc-mode"]:checked') as HTMLInputElement | null;
+      if (activeModeElement && labelElement) {
+        labelElement.textContent = activeModeElement.value === 'margin' ? 'Pożądana marża (%)' : 'Pożądany narzut (%)';
+      }
+      runCalculation();
+    };
+
+    // Rejestracja słuchaczy zdarzeń
+    purchaseInput?.addEventListener('input', runCalculation);
+    vatInput?.addEventListener('change', runCalculation);
+    percentageInput?.addEventListener('input', runCalculation);
+    
+    radioModes.forEach(radio => {
+      radio.addEventListener('change', toggleLabels);
+    });
+  };
+
+  // Cykl inicjalizacji odporny na odświeżenia stanów SPA i ładowanie tradycyjne
+  initMarginCalculator();
+  document.addEventListener('astro:after-swap', initMarginCalculator);
+</script>
