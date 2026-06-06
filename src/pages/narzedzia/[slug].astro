@@ -1,45 +1,43 @@
 ---
 // src/pages/narzedzia/[slug].astro
-// Kompletna korekta typowania eliminująca błędy typu 'never' dla kompilatora TypeScript
+// Pełna stabilizacja typowania pod mechanizm sprawdzania błędów (astro check) w potoku CI/CD
 import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content'; // Jawny import typu wpisu kolekcji
+import type { CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
-// Mapowanie statyczne komponentów na poziomie kompilacji bundlera Vite
+// Mapowanie komponentów przez warstwę bundlera Vite w czasie kompilacji
 const dynamicComponents = import.meta.glob('../../components/dynamic/*.astro');
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools');
-  
-  // NAPRAWIONE: Dodano ścisłe typowanie parametru pętli (tool: CollectionEntry<'tools'>)
   return tools.map((tool: CollectionEntry<'tools'>) => ({
     params: { slug: tool.slug },
     props: { tool },
   }));
 }
 
-// NAPRAWIONE: Definicja interfejsu Props dla całego komponentu Astro
+// Interfejs wejściowy dla ścisłej kontroli typów Astro
 interface Props {
   tool: CollectionEntry<'tools'>;
 }
 
-// Bezpieczna destrukturyzacja dzięki otypowaniu Props powyżej
-const { tool } = Astro.props;
+// NAPRAWIONE: Jawne rzutowanie typu (as Props), które definitywnie usuwa błędy typu 'never' na GitHubie
+const { tool } = Astro.props as Props;
 const { title, category, excelLink } = tool.data;
 
-// Renderowanie dokumentacji Markdown skorelowanej z bieżącym slugiem
+// Renderowanie dokumentacji Markdown
 const { Content } = await tool.render();
 
-// Zabezpieczenie ścieżek bazowych pod routing relatywny (np. /commercestack)
+// Zabezpieczenie ścieżek bazowych pod GitHub Pages i routing lokalny
 const base = import.meta.env.BASE_URL.endsWith('/') 
   ? import.meta.env.BASE_URL 
   : `${import.meta.env.BASE_URL}/`;
 
-// Dynamiczne generowanie ścieżki do dedykowanego komponentu .astro na podstawie sluga pliku markdown
+// Dynamiczne generowanie ścieżki do dedykowanego komponentu .astro na podstawie sluga
 const componentPath = `../../components/dynamic/${tool.slug}.astro`;
 const dynamicComponentLoader = dynamicComponents[componentPath];
 
-// Rezolucja modułu – jeśli komponent istnieje w src/components/dynamic/, zostanie wyrenderowany serwerowo
+// Rezolucja modułu na poziomie serwera
 const DynamicComponent = dynamicComponentLoader 
   ? ((await dynamicComponentLoader()) as any).default 
   : null;
@@ -69,7 +67,7 @@ const DynamicComponent = dynamicComponentLoader
       <span class="text-slate-900 dark:text-slate-300 font-semibold truncate max-w-[200px] sm:max-w-none" aria-current="page">{title}</span>
     </nav>
     
-    {/* Sekcja Nagłówkowa Artykułu */}
+    {/* Sekcja Nagłówkowa */}
     <div class="max-w-3xl mb-10">
       <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4 transition-colors">
         {title}
@@ -83,7 +81,7 @@ const DynamicComponent = dynamicComponentLoader
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <div class="lg:col-span-8 space-y-12">
         
-        {/* Renderowanie Warunkowe Komponentu Wyliczeniowego .astro */}
+        {/* Renderowanie Warunkowe Komponentu .astro wyciągniętego z mapy globbingu */}
         {DynamicComponent ? (
           <DynamicComponent />
         ) : (
@@ -100,7 +98,7 @@ const DynamicComponent = dynamicComponentLoader
           </div>
         )}
 
-        {/* Sekcja Dokumentacji Technicznej (Markdown) */}
+        {/* Sekcja Dokumentacji Technicznej */}
         <article class="prose prose-slate dark:prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:text-slate-900 dark:prose-headings:text-white prose-a:text-orange-500 hover:prose-a:text-orange-600 transition-colors">
           <Content />
         </article>
