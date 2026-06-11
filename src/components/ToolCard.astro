@@ -1,15 +1,16 @@
 ---
 // src/components/ToolCard.astro
-// Pełna, skorygowana syntaktycznie fuzja wizualna z optymalizacją inline SVG
+// Skorygowana fuzja wizualna z optymalizacją struktury pod kątem filtracji i semantyki
 
 interface Props {
   title: string;
   category: string;
+  type: string;
+  shortdesc: string;
   slug: string;
-  description?: string;
 }
 
-const { title, category, slug, description = "Uruchom wyspecjalizowany moduł inżynierski i przejdź do panelu obliczeniowego." } = Astro.props;
+const { title, category, type, shortdesc, slug } = Astro.props;
 
 // Zabezpieczenie ścieżek bazowych pod GitHub Pages i routing lokalny
 const base = import.meta.env.BASE_URL.endsWith('/') 
@@ -19,9 +20,6 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 const shareUrl = `${Astro.url.origin}${base}narzedzia/${slug}`;
 const encodedTitle = encodeURIComponent(title);
 const encodedText = encodeURIComponent(`Sprawdź to narzędzie: ${title}`);
-
-// Normalizacja kategorii do małych liter w celu poprawnego mapowania ikon
-const categoryNormalized = category.toLowerCase();
 ---
 
 <div class="group relative flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 h-full overflow-hidden shadow-sm hover:shadow-md">
@@ -37,29 +35,14 @@ const categoryNormalized = category.toLowerCase();
   <div class="p-6 flex flex-col grow">
     <div class="flex justify-between items-center mb-4">
       
-      {/* Podwójnie zagnieżdżony kontener ikony ze starey makiety wizualnej */}
-      <div class="p-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg">
-        <div class="p-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md">
-          {/* Czysty blok warunkowy if/else JSX bez błędów zagnieżdżania nawiasów okrągłych */}
-          {categoryNormalized === 'dsp' || categoryNormalized === 'finanse' ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.707l-5.323 5.323a.5.5 0 0 1-.708 0L6 8.543 2.854 11.69a.5.5 0 1 1-.708-.708l3.5-3.5a.5.5 0 0 1 .708 0L8 8.957 12.793 4.16H10.5a.5.5 0 0 1-.5-.5"/>
-            </svg>
-          ) : categoryNormalized === 'marketing' ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.737 11h5.526a2 2 0 0 1 3.442 0H14.5a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4.5a.5.5 0 0 0 .5-.5 1.5 1.5 0 0 1 3 0 .5.5 0 0 0 .5-.5V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5V5z"/>
-            </svg>
-          )}
-        </div>
-      </div>
-
-      {/* Badge kategorii */}
-      <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full transition-colors">
+      {/* Wymieniony kontener ikony na badge kategorii (Single Component State) */}
+      <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 rounded-md border border-orange-100 dark:border-orange-900/30 transition-colors">
         {category}
+      </span>
+      
+      {/* Badge typu modułu */}
+      <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-full transition-colors">
+        {type}
       </span>
     </div>
 
@@ -68,8 +51,9 @@ const categoryNormalized = category.toLowerCase();
       {title}
     </h3>
 
+    {/* Opis krótki z kontrolą przepełnienia linii */}
     <p class="text-sm text-slate-500 dark:text-slate-400 grow line-clamp-3">
-      {description}
+      {shortdesc}
     </p>
   </div>
 
@@ -110,10 +94,10 @@ const categoryNormalized = category.toLowerCase();
     </div>
 
     {/* Przycisk akcji */}
-    <div class="flex items-center px-4 py-2 text-xs font-semibold text-white bg-slate-900 dark:bg-slate-800 rounded-lg group-hover:bg-orange-500 dark:group-hover:bg-orange-500 transition-colors shadow-sm">
+    <div class="flex items-center gap-1 px-4 py-2 text-xs font-semibold text-white bg-slate-900 dark:bg-slate-800 rounded-lg group-hover:bg-orange-500 dark:group-hover:bg-orange-500 transition-colors shadow-sm">
       Uruchom 
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="ml-1.5" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
+        <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
       </svg>
     </div>
 

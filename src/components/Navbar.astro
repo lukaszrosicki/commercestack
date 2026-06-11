@@ -1,16 +1,15 @@
 ---
+// src/components/Navbar.astro
 // Zabezpieczenie ścieżek bazowych dla GitHub Pages / podkatalogów
 const base = import.meta.env.BASE_URL.endsWith('/') 
   ? import.meta.env.BASE_URL 
   : `${import.meta.env.BASE_URL}/`;
 
-// Definicja typów dla ścisłej kontroli kompilatora
 interface NavItem {
   label: string;
   href: string;
 }
 
-// Rekonstrukcja struktury menu (Single Source of Truth dla odnośników)
 const navItems: NavItem[] = [
   { label: 'Narzędzia', href: `${base}narzedzia` },
   { label: 'O projekcie', href: `${base}o-projekcie` },
@@ -25,7 +24,7 @@ const navItems: NavItem[] = [
     <div class="flex items-center gap-10">
       <div class="flex items-center">
         <a href={base} class="text-xl font-bold tracking-tight text-slate-900 dark:text-white transition-colors hover:text-slate-700 dark:hover:text-slate-300">
-          &lt;CStack.<span class="text-orange-500">eu</span>&gt;
+          &lt;Commerce<span class="text-orange-500">Stack</span>&gt;
         </a>
       </div>
       
@@ -45,23 +44,23 @@ const navItems: NavItem[] = [
     <!-- Sekcja Prawa: Narzędzia interfejsu -->
     <div class="flex items-center gap-2 sm:gap-4">
       
-      <!-- Przełącznik Dark Mode (Natywne SVGs inline eliminujące asynchroniczny fetch) -->
+      <!-- Przełącznik Dark Mode -->
       <button
         id="theme-toggle"
         class="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-orange-500 dark:text-slate-400 dark:hover:text-orange-500 transition-colors"
         aria-label="Zmień motyw"
       >
-        <!-- Ikona Słońca (Widoczna tylko w trybie Dark) -->
-       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brightness-high-fill" viewBox="0 0 16 16">
-  <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
-</svg>
-        <!-- Ikona Księżyca (Widoczna tylko w trybie Light) -->
-       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-fill" viewBox="0 0 16 16">
-  <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
-</svg>
+        <!-- Ikona Słońca: widoczna tylko w trybie dark -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hidden dark:block bi bi-brightness-high-fill" viewBox="0 0 16 16">
+          <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
+        </svg>
+        <!-- Ikona Księżyca: widoczna tylko w trybie light -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="block dark:hidden bi bi-moon-fill" viewBox="0 0 16 16">
+          <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
+        </svg>
       </button>
 
-      <!-- LinkedIn (Natywny link z optymalizacją rel pod kątem bezpieczeństwa) -->
+      <!-- LinkedIn -->
       <a 
         href="https://linkedin.com/in/lukaszrosicki" 
         target="_blank" 
@@ -80,9 +79,9 @@ const navItems: NavItem[] = [
         class="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-slate-900 hover:text-orange-500 dark:text-white dark:hover:text-orange-500 transition-colors" 
         aria-label="Otwórz menu"
       >
-       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-menu-button-wide-fill" viewBox="0 0 16 16">
-  <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v2A1.5 1.5 0 0 0 1.5 5h13A1.5 1.5 0 0 0 16 3.5v-2A1.5 1.5 0 0 0 14.5 0zm1 2h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m9.927.427A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
-</svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-menu-button-wide-fill" viewBox="0 0 16 16">
+          <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v2A1.5 1.5 0 0 0 1.5 5h13A1.5 1.5 0 0 0 16 3.5v-2A1.5 1.5 0 0 0 14.5 0zm1 2h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m9.927.427A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
+        </svg>
       </button>
     </div>
   </div>
@@ -106,30 +105,42 @@ const navItems: NavItem[] = [
 </header>
 
 <script>
-  // Izolacja logiki interfejsu (Scoped Script)
+  // Deklaracja nazw funkcji jako zmiennych referencyjnych (niezbędne do poprawnego czyszczenia eventów)
+  let onToggleMenu: (() => void) | null = null;
+  let onToggleTheme: (() => void) | null = null;
+
   const initNavbar = () => {
     const mobileMenuBtn = document.getElementById("mobile-menu-btn");
     const mobileMenu = document.getElementById("mobile-menu");
     const themeToggleBtn = document.getElementById("theme-toggle");
 
-    // Obsługa Menu Mobilnego
-    mobileMenuBtn?.addEventListener("click", () => {
-      mobileMenu?.classList.toggle("hidden");
-    });
+    // Czyszczenie starych eventów przed ponownym przypisaniem (odporność na View Transitions)
+    if (onToggleMenu && mobileMenuBtn) mobileMenuBtn.removeEventListener("click", onToggleMenu);
+    if (onToggleTheme && themeToggleBtn) themeToggleBtn.removeEventListener("click", onToggleTheme);
 
-    // Przełącznik mechanizmu Dark Mode (synchronizacja z localStorage)
-    themeToggleBtn?.addEventListener("click", () => {
-      if (document.documentElement.classList.contains("dark")) {
+    // Definicje operacji
+    onToggleMenu = () => {
+      mobileMenu?.classList.toggle("hidden");
+    };
+
+    onToggleTheme = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      if (isDark) {
         document.documentElement.classList.remove("dark");
         localStorage.setItem("theme", "light");
       } else {
         document.documentElement.classList.add("dark");
         localStorage.setItem("theme", "dark");
       }
-    });
+      window.dispatchEvent(new Event('theme-changed'));
+    };
+
+    // Przypisanie czystych referencji zdarzeń
+    mobileMenuBtn?.addEventListener("click", onToggleMenu);
+    themeToggleBtn?.addEventListener("click", onToggleTheme);
   };
 
-  // Cykl inicjalizacji (odporny na mechanizmy nawigacji spa / klasyczne przeładowania)
+  // Uruchomienie cyklu życia komponentu
   initNavbar();
   document.addEventListener("astro:after-swap", initNavbar);
 </script>

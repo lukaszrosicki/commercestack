@@ -1,8 +1,9 @@
 ---
 title: "Kalkulator Marży i Narzutu"
 description: "Szybko i bezbłędnie przeliczaj marżę i narzut. Poznaj rzeczywistą rentowność swoich produktów w e-commerce."
+shortdesc: "Dwustronny kalkulator marży i narzutu"
 category: "finanse"
-excelLink: "https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit"
+type: "kalkulator"
 ---
 
 ## Czym różni się marża od narzutu?

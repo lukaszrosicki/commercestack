@@ -14,6 +14,8 @@ const toolsCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     category: z.string(), // Potrzebne do filtrów na stronie narzędzi
+    type: z.string(),
+    shortdesc: z.string(),
     scriptPath: z.string().optional(), // Ścieżka do dynamicznego JS, jeśli potrzebny
   }),
 });

@@ -1,0 +1,249 @@
+---
+// src/components/dynamic/ltv-cac-calculator.astro
+// Kalkulator wskaźnika LTV do CAC ze wsparciem dla Dark Mode i dynamiczną interpretacją kondycji biznesu
+---
+
+<div class="border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-sm overflow-hidden transition-colors duration-200">
+  
+  {/* Nagłówek kalkulatora (Górna belka systemowa) */}
+  <div class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between transition-colors">
+    <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Moduł Obliczeniowy</span>
+    
+    <div class="flex gap-1.5">
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+    </div>
+  </div>
+
+  {/* Główny Kontener Grid: Formularz (Lewo) + Wyniki (Prawo) */}
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8">
+    
+    {/* Kolumna Lewa: Pola wejściowe */}
+    <div class="lg:col-span-7 flex flex-col gap-6 pr-0 lg:pr-4">
+      
+      <div class="border-b border-slate-100 dark:border-slate-800 pb-3 transition-colors">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Dane wejściowe</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Wprowadź parametry retencji oraz koszty pozyskania nowych klientów.</p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Input: Koszty Marketingu */}
+        <div>
+          <label for="lc-marketing-spend" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Wydatki na marketing/sprzedaż (PLN)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z"/>
+              </svg>
+            </div>
+            <input type="number" id="lc-marketing-spend" placeholder="np. 15000" min="0" step="0.01" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+
+        {/* Input: Liczba Nowych Klientów */}
+        <div>
+          <label for="lc-new-customers" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Pozyskani nowi klienci (osób)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 .044-1H3s-1 0-1-1 1-4 6-4c.959 0 1.76.128 2.424.33a4.5 4.5 0 0 1 1.086-1.026C10.377 6.484 9.274 6 8 6c-5.333 0-7 4-7 4s-1 1-1 1zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+              </svg>
+            </div>
+            <input type="number" id="lc-new-customers" placeholder="np. 500" min="1" step="1" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Input: Średni Koszyk (AOV) */}
+        <div>
+          <label for="lc-aov" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Średnia wartość zamówienia / AOV
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5"/>
+              </svg>
+            </div>
+            <input type="number" id="lc-aov" placeholder="np. 180" min="0" step="0.01" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+
+        {/* Input: Częstotliwość zakupów w roku */}
+        <div>
+          <label for="lc-frequency" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Powtarzalność zakupów (w roku)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5zm-3 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5zm-5 3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5z"/>
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+              </svg>
+            </div>
+            <input type="number" id="lc-frequency" placeholder="np. 2.5" min="0" step="0.1" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Input: Średnia długość relacji (w latach) */}
+        <div>
+          <label for="lc-lifespan" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Okres relacji z klientem (Lata)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 1 1 14 0"/>
+              </svg>
+            </div>
+            <input type="number" id="lc-lifespan" placeholder="np. 3" min="0.1" step="0.1" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+
+        {/* Input: Średnia marża procentowa sklepu */}
+        <div>
+          <label for="lc-margin" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Średnia marża sklepu (%)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1h-2.05a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1z"/>
+              </svg>
+            </div>
+            <input type="number" id="lc-margin" placeholder="np. 40" min="0.1" max="100" step="0.1" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {/* Kolumna Prawa: Warstwa prezentacji wyników (Dashboard) */}
+    <div class="lg:col-span-5 bg-slate-50 dark:bg-slate-900/60 rounded-xl p-6 sm:p-8 flex flex-col justify-center gap-5 border border-slate-200 dark:border-slate-800/80 transition-colors">
+      
+      <div>
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Stosunek LTV do CAC</p>
+        <p class="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight transition-colors" id="lc-res-ratio">0.0 : 1</p>
+        <p class="text-xs font-semibold mt-1.5 transition-colors" id="lc-res-badge">Wprowadź dane, aby przeanalizować relację</p>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <div>
+          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Wartość LTV (Marża)</p>
+          <p class="text-xl font-extrabold text-slate-800 dark:text-slate-100 transition-colors" id="lc-res-ltv">0,00 zł</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Koszt CAC</p>
+          <p class="text-xl font-bold text-slate-700 dark:text-slate-300 transition-colors" id="lc-res-cac">0,00 zł</p>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Całkowity przychód z klienta (LTV brutto)</p>
+        <p class="text-base font-semibold text-slate-600 dark:text-slate-400 transition-colors" id="lc-res-ltv-gross">0,00 zł</p>
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
+
+<script>
+  // Logika obliczeniowa obsługująca dynamiczną walidację biznesową i stany UX
+  const initLtvCacCalculator = () => {
+    const spendInput = document.getElementById('lc-marketing-spend') as HTMLInputElement | null;
+    const newCustInput = document.getElementById('lc-new-customers') as HTMLInputElement | null;
+    const aovInput = document.getElementById('lc-aov') as HTMLInputElement | null;
+    const freqInput = document.getElementById('lc-frequency') as HTMLInputElement | null;
+    const lifespanInput = document.getElementById('lc-lifespan') as HTMLInputElement | null;
+    const marginInput = document.getElementById('lc-margin') as HTMLInputElement | null;
+
+    const outRatio = document.getElementById('lc-res-ratio');
+    const outBadge = document.getElementById('lc-res-badge');
+    const outLtv = document.getElementById('lc-res-ltv');
+    const outCac = document.getElementById('lc-res-cac');
+    const outLtvGross = document.getElementById('lc-res-ltv-gross');
+
+    const formatCurrency = (value: number) => {
+      if (isNaN(value) || !isFinite(value)) return "0,00 zł";
+      return new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(value);
+    };
+
+    const runCalculation = () => {
+      if (!spendInput || !newCustInput || !aovInput || !freqInput || !lifespanInput || !marginInput) return;
+
+      const spend = parseFloat(spendInput.value) || 0;
+      const newCustomers = parseFloat(newCustInput.value) || 0;
+      const aov = parseFloat(aovInput.value) || 0;
+      const frequency = parseFloat(freqInput.value) || 0;
+      const lifespan = parseFloat(lifespanInput.value) || 0;
+      const margin = parseFloat(marginInput.value) || 0;
+
+      // 1. Obliczenie CAC (Customer Acquisition Cost)
+      const cac = newCustomers > 0 ? (spend / newCustomers) : 0;
+
+      // 2. Obliczenie LTV (Customer Lifetime Value) brutto i netto (na bazie marży)
+      const ltvGross = aov * frequency * lifespan;
+      const ltvNet = ltvGross * (margin / 100);
+
+      // 3. Obliczenie ostatecznego stosunku (Ratio)
+      const ratio = cac > 0 ? (ltvNet / cac) : 0;
+
+      // Przypisanie podstawowych liczb do widoku
+      if (outCac) outCac.textContent = formatCurrency(cac);
+      if (outLtv) outLtv.textContent = formatCurrency(ltvNet);
+      if (outLtvGross) outLtvGross.textContent = formatCurrency(ltvGross);
+
+      // 4. Zaawansowana ewaluacja kondycji biznesu i podpięcie klas dynamicznych
+      if (outRatio && outBadge) {
+        if (spend === 0 || newCustomers === 0 || aov === 0) {
+          outRatio.textContent = "0.0 : 1";
+          outRatio.className = "text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight transition-colors";
+          outBadge.textContent = "Wprowadź dane, aby przeanalizować relację";
+          outBadge.className = "text-xs font-semibold mt-1.5 text-slate-400 dark:text-slate-500 transition-colors";
+          return;
+        }
+
+        outRatio.textContent = `${ratio.toFixed(1)} : 1`;
+
+        // Scenariusze i progi kondycji LTV:CAC
+        if (ratio < 1.0) {
+          outRatio.className = "text-4xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight transition-colors";
+          outBadge.textContent = "Krytycznie: Koszt pozyskania klienta przewyższa jego wartość.";
+          outBadge.className = "text-xs font-semibold mt-1.5 text-rose-600 dark:text-rose-400 transition-colors";
+        } else if (ratio >= 1.0 && ratio < 3.0) {
+          outRatio.className = "text-4xl font-extrabold text-amber-500 tracking-tight transition-colors";
+          outBadge.textContent = "Niska efektywność: Biznes generuje zbyt mały zwrot po uwzględnieniu COGS.";
+          outBadge.className = "text-xs font-semibold mt-1.5 text-amber-500 transition-colors";
+        } else if (ratio >= 3.0 && ratio <= 5.0) {
+          outRatio.className = "text-4xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight transition-colors";
+          outBadge.textContent = "Optymalnie: Książkowa, zdrowa relacja wzrostu dla e-commerce.";
+          outBadge.className = "text-xs font-semibold mt-1.5 text-emerald-600 dark:text-emerald-400 transition-colors";
+        } else {
+          outRatio.className = "text-4xl font-extrabold text-blue-500 tracking-tight transition-colors";
+          outBadge.textContent = "Bardzo dobrze, ale możesz agresywniej skalować marketing.";
+          outBadge.className = "text-xs font-semibold mt-1.5 text-blue-500 transition-colors";
+        }
+      }
+    };
+
+    // Zbiorcze podpięcie zdarzeń
+    [spendInput, newCustInput, aovInput, freqInput, lifespanInput, marginInput].forEach(input => {
+      input?.addEventListener('input', runCalculation);
+    });
+  };
+
+  // Inicjalizacja dla ładowania klasycznego oraz systemu wysp/przejść Astro View Transitions
+  initLtvCacCalculator();
+  document.addEventListener('astro:after-swap', initLtvCacCalculator);
+</script>

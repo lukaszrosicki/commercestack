@@ -1,0 +1,280 @@
+---
+// src/components/dynamic/return-impact-calculator.astro
+// Kalkulator Kosztu Zwrotów – mierzy realne straty finansowe i erozję marży przez zwroty konsumenckie
+---
+
+<div class="border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-sm overflow-hidden transition-colors duration-200">
+  
+  {/* Nagłówek kalkulatora (Górna belka systemowa) */}
+  <div class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between transition-colors">
+    <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Moduł Obliczeniowy Audyt</span>
+    
+    <div class="flex gap-1.5">
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+    </div>
+  </div>
+
+  {/* Główny Kontener Grid: Formularz (Lewo) + Wyniki (Prawo) */}
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8">
+    
+    {/* Kolumna Lewa: Pola wejściowe */}
+    <div class="lg:col-span-7 flex flex-col gap-6 pr-0 lg:pr-4">
+      
+      <div class="border-b border-slate-100 dark:border-slate-800 pb-3 transition-colors">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Dane wejściowe</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Wprowadź miesięczne statystyki sprzedaży oraz parametry zwrotów paczek.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Input: Liczba zamówień */}
+        <div>
+          <label for="rt-total-orders" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Miesięczna liczba zamówień (szt.)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-4 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M14.5 3a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7H3.102z"/>
+              </svg>
+            </div>
+            <input type="number" id="rt-total-orders" placeholder="np. 1000" min="1" step="1" class="w-full px-4 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+
+        {/* Input: Średnia wartość koszyka (AOV) */}
+        <div>
+          <label for="rt-aov" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Średni koszyk / AOV netto (PLN)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-4 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2z"/>
+              </svg>
+            </div>
+            <input type="number" id="rt-aov" placeholder="np. 200" min="1" step="0.01" class="w-full px-4 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Input: Współczynnik zwrotów */}
+        <div>
+          <label for="rt-return-rate" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Współczynnik zwrotów / Return Rate (%)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-4 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.442 2.558a2.416 2.416 0 1 0 0 4.832 2.416 2.416 0 0 0 0-4.832M10.12 5a3.416 3.416 0 1 1 6.832 0 3.416 3.416 0 0 1-6.832 0M2.558 11.12a2.416 2.416 0 1 0 0 4.832 2.416 2.416 0 0 0 0-4.832m-3.322 2.416a3.416 3.416 0 1 1 6.832 0 3.416 3.416 0 0 1-6.832 0M1.242 14.225a.5.5 0 0 1-.034-.706L13.516 1.058a.5.5 0 1 1 .74.674L1.948 14.19a.5.5 0 0 1-.706.035z"/>
+              </svg>
+            </div>
+            <input type="number" id="rt-return-rate" placeholder="np. 15" min="0" max="100" step="0.1" class="w-full px-4 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+
+        {/* Input: Średnia Marża Produktowa */}
+        <div>
+          <label for="rt-gross-margin" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Średnia marża brutto sklepu (%)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-4 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1h-2.05a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1H6.95a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1zm9.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1h-2.05a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1z"/>
+              </svg>
+            </div>
+            <input type="number" id="rt-gross-margin" placeholder="np. 50" min="0.1" max="100" step="0.1" class="w-full px-4 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Input: Koszt obsługi zwrotu operacyjny */}
+        <div>
+          <label for="rt-handling-cost" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Koszt operacyjny obsługi zwrotu (PLN/szt.)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-4 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+              </svg>
+            </div>
+            <input type="number" id="rt-handling-cost" placeholder="np. 15" min="0" step="0.01" class="w-full px-4 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+
+        {/* Input: Procentowa utrata wartości */}
+        <div>
+          <label for="rt-value-loss" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Średnia utrata wartości towaru (%)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-4 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1h-2.05a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1H6.95a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1zm9.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1h-2.05a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1z"/>
+              </svg>
+            </div>
+            <input type="number" id="rt-value-loss" placeholder="np. 5" min="0" max="100" step="0.1" class="w-full px-4 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {/* Kolumna Prawa: Warstwa prezentacji wyników (Dashboard) */}
+    <div class="lg:col-span-5 bg-slate-50 dark:bg-slate-900/60 rounded-xl p-6 sm:p-8 flex flex-col justify-center gap-6 border border-slate-200 dark:border-slate-800/80 transition-colors">
+      
+      <div>
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Erozja marży sklepu</p>
+        <p class="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight transition-colors" id="rt-res-erosion">0,00%</p>
+        <p class="text-xs font-semibold mt-1.5 text-slate-500 dark:text-slate-400 transition-colors" id="rt-res-status">Wprowadź dane</p>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4 pt-6 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <div>
+          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Miesięczny koszt zwrotów</p>
+          <p class="text-xl font-extrabold text-rose-600 dark:text-rose-400 transition-colors" id="rt-res-total-cost">0,00 zł</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Utracona marża kwotowo</p>
+          <p class="text-xl font-bold text-slate-700 dark:text-slate-300 transition-colors" id="rt-res-lost-margin">0,00 zł</p>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Realna (skorygowana) marża brutto</p>
+        <p class="text-base font-semibold text-emerald-600 dark:text-emerald-400 transition-colors" id="rt-res-adjusted-margin">0,00%</p>
+      </div>
+
+      <div class="pt-6 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Liczba zwróconych zamówień</p>
+        <p class="text-base font-medium text-slate-600 dark:text-slate-400 transition-colors" id="rt-res-returned-count">0 szt. / miesiąc</p>
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
+
+<script>
+  // Logika analizy wpływu zwrotów na finanse (Return Rate Impact Logic)
+  const initReturnImpactCalculator = () => {
+    const ordersInput = document.getElementById('rt-total-orders') as HTMLInputElement | null;
+    const aovInput = document.getElementById('rt-aov') as HTMLInputElement | null;
+    const returnRateInput = document.getElementById('rt-return-rate') as HTMLInputElement | null;
+    const marginInput = document.getElementById('rt-gross-margin') as HTMLInputElement | null;
+    const handlingInput = document.getElementById('rt-handling-cost') as HTMLInputElement | null;
+    const lossInput = document.getElementById('rt-value-loss') as HTMLInputElement | null;
+
+    const outErosion = document.getElementById('rt-res-erosion');
+    const outStatus = document.getElementById('rt-res-status');
+    const outTotalCost = document.getElementById('rt-res-total-cost');
+    const outLostMargin = document.getElementById('rt-res-lost-margin');
+    const outAdjustedMargin = document.getElementById('rt-res-adjusted-margin');
+    const outReturnedCount = document.getElementById('rt-res-returned-count');
+
+    const formatCurrency = (value: number) => {
+      if (isNaN(value) || !isFinite(value)) return "0,00 zł";
+      return new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(value);
+    };
+
+    const runCalculation = () => {
+      if (!ordersInput || !aovInput || !returnRateInput || !marginInput || !handlingInput || !lossInput) return;
+
+      const totalOrders = parseFloat(ordersInput.value) || 0;
+      const aov = parseFloat(aovInput.value) || 0;
+      const returnRate = parseFloat(returnRateInput.value) || 0;
+      const grossMarginPercent = parseFloat(marginInput.value) || 0;
+      const handlingCost = parseFloat(handlingInput.value) || 0;
+      const valueLossPercent = parseFloat(lossInput.value) || 0;
+
+      if (totalOrders <= 0 || aov <= 0 || grossMarginPercent <= 0) {
+        if (outStatus) outStatus.textContent = "Wprowadź dane";
+        return;
+      }
+
+      // Całkowity przychód wyjściowy i wyjściowy zysk
+      const totalRevenue = totalOrders * aov;
+      const initialGrossProfit = totalRevenue * (grossMarginPercent / 100);
+
+      // 1. Liczba paczek zwracanych
+      const returnedOrdersCount = Math.round(totalOrders * (returnRate / 100));
+
+      // 2. Bezpośrednie straty finansowe ze zwrotów:
+      // a) Utracona marża (zwracana kwota ucieka ze sklepu)
+      const lostMarginCash = returnedOrdersCount * aov * (grossMarginPercent / 100);
+      
+      // b) Koszty operacyjne zwrotu (pakowanie, obsługa, kurier)
+      const totalHandlingCost = returnedOrdersCount * handlingCost;
+
+      // c) Utrata wartości zniszczonego towaru liczona od COGS (kosztu zakupu)
+      const cogsPerUnit = aov * (1 - (grossMarginPercent / 100));
+      const totalValueLossCost = returnedOrdersCount * cogsPerUnit * (valueLossPercent / 100);
+
+      // Łączny operacyjny koszt finansowy zwrotów
+      const realReturnOperationalCost = totalHandlingCost + totalValueLossCost;
+
+      // 3. Skorygowane wyniki finansowe
+      const adjustedGrossProfit = initialGrossProfit - lostMarginCash - realReturnOperationalCost;
+      const adjustedRevenue = totalRevenue - (returnedOrdersCount * aov);
+
+      // Realna marża po zwrotach
+      const adjustedMarginPercent = adjustedRevenue > 0 ? (adjustedGrossProfit / adjustedRevenue) * 100 : 0;
+
+      // Erozja marży w punktach procentowych (pp.)
+      const marginErosion = grossMarginPercent - adjustedMarginPercent;
+
+      // Renderowanie danych w DOM
+      if (outTotalCost) outTotalCost.textContent = formatCurrency(realReturnOperationalCost);
+      if (outLostMargin) outLostMargin.textContent = formatCurrency(lostMarginCash);
+      if (outReturnedCount) outReturnedCount.textContent = `${returnedOrdersCount} szt. / miesiąc`;
+      
+      if (outAdjustedMargin) {
+        outAdjustedMargin.textContent = `${Math.max(0, adjustedMarginPercent).toFixed(2)}%`;
+      }
+
+      if (outErosion) {
+        outErosion.textContent = `-${Math.max(0, marginErosion).toFixed(2)} pp.`;
+        
+        // Zmiana klas koloru wskaźnika głównego na podstawie skali erozji
+        if (marginErosion > 5.0) {
+          outErosion.className = "text-4xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight transition-colors";
+        } else if (marginErosion > 2.0) {
+          outErosion.className = "text-4xl font-extrabold text-orange-500 tracking-tight transition-colors";
+        } else {
+          outErosion.className = "text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight transition-colors";
+        }
+      }
+
+      // Dynamiczne komunikaty statusowe UX
+      if (outStatus) {
+        if (returnRate === 0) {
+          outStatus.textContent = "Idealny model biznesowy";
+          outStatus.className = "text-xs font-semibold mt-1.5 text-emerald-600 dark:text-emerald-400 transition-colors";
+        } else if (marginErosion > 5.0 || returnRate > 25) {
+          outStatus.textContent = "Krytyczny wpływ zwrotów";
+          outStatus.className = "text-xs font-semibold mt-1.5 text-rose-600 dark:text-rose-400 transition-colors";
+        } else if (marginErosion > 2.0) {
+          outStatus.textContent = "Zauważalny spadek zyskowności";
+          outStatus.className = "text-xs font-semibold mt-1.5 text-orange-500 transition-colors";
+        } else {
+          outStatus.textContent = "Poziom bezpieczny dla operacji";
+          outStatus.className = "text-xs font-semibold mt-1.5 text-slate-500 dark:text-slate-400 transition-colors";
+        }
+      }
+    };
+
+    // Podpięcie słuchaczy pod zmianę dowolnej wartości
+    [ordersInput, aovInput, returnRateInput, marginInput, handlingInput, lossInput].forEach(input => {
+      input?.addEventListener('input', runCalculation);
+    });
+  };
+
+  // Pełna inicjalizacja zgodna z cyklem życia wysp Astro i View Transitions SPA
+  initReturnImpactCalculator();
+  document.addEventListener('astro:after-swap', initReturnImpactCalculator);
+</script>

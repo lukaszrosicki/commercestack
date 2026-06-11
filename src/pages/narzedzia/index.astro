@@ -5,32 +5,11 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ToolCard from '../../components/ToolCard.astro';
 
-// Pobieramy dane z prawidłowej kolekcji narzędzi
+// Pobieramy dane z prawidłowej kolekcji narzędzi (Single Source of Truth)
 const tools = await getCollection('tools');
 
-// Generowanie obiektów prototypowych (mock) dla zachowania spójności makiety wizualnej
-const mockTools = Array.from({ length: 12 }, (_, index) => {
-  const baseTool = tools[index % tools.length] || {
-    id: `test-${index}`,
-    slug: `mock-slug-${index}`,
-    data: {
-      title: `Przykładowe Narzędzie ${index + 1}`,
-      category: "DSP",
-    }
-  };
-
-  return {
-    ...baseTool,
-    slug: index < tools.length ? baseTool.slug : `${baseTool.slug}-${index}`,
-    data: {
-      ...baseTool.data,
-      title: index < tools.length ? baseTool.data.title : `Przykładowe Narzędzie ${index + 1}`
-    }
-  };
-});
-
-// Dynamiczne pobieranie unikalnych kategorii (Single Source of Truth)
-const categories = [...new Set(mockTools.map(t => t.data.category.toLowerCase()))];
+// Dynamiczne pobieranie unikalnych kategorii na podstawie rzeczywistych danych
+const categories = [...new Set(tools.map(t => t.data.category?.toLowerCase()).filter(Boolean))];
 ---
 
 <Layout title="Narzędzia i Kalkulatory - CStack.eu">
@@ -42,7 +21,7 @@ const categories = [...new Set(mockTools.map(t => t.data.category.toLowerCase())
         Centrum Narzędzi <span class="text-orange-500">Inżynierskich</span>.
       </h1>
       <p class="text-base text-slate-600 dark:text-slate-400 max-w-3xl transition-colors">
-        Zbiór darmowych, minimalistycznych modułów obliczeniowych pomagających w analizie sygnałów, przetwarzaniu danych oraz optymalizacji procesów systemowych.
+        Zbiór darmowych, kalkulatorów i narzędzi pomagających podejmować decyzje menedżerskie w biznesie e-commercce.
       </p>
     </section>
 
@@ -95,7 +74,7 @@ const categories = [...new Set(mockTools.map(t => t.data.category.toLowerCase())
 
         {/* Siatka komponentów ToolCard */}
         <section class="tools-grid">
-          {mockTools.map((tool) => (
+          {tools.map((tool) => (
             <div 
               class="tool-item-wrapper h-full transition-all duration-200" 
               data-category={tool.data.category?.toLowerCase()} 
@@ -104,7 +83,9 @@ const categories = [...new Set(mockTools.map(t => t.data.category.toLowerCase())
               <ToolCard 
                 title={tool.data.title}
                 category={tool.data.category}
-                slug={tool.slug} 
+                type={tool.data.type}
+                shortdesc={tool.data.shortdesc}
+                slug={tool.slug}
               />
             </div>
           ))}

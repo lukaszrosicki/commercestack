@@ -1,0 +1,235 @@
+---
+// src/components/dynamic/free-shipping-optimizer.astro
+// Optymalizator Progu Darmowej Dostawy – wyznacza opłacalność i ryzyka zmiany polityki wysyłkowej
+---
+
+<div class="border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-sm overflow-hidden transition-colors duration-200">
+  
+  {/* Nagłówek kalkulatora (Górna belka systemowa) */}
+  <div class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between transition-colors">
+    <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Moduł Obliczeniowy</span>
+    
+    <div class="flex gap-1.5">
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+      <div class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+    </div>
+  </div>
+
+  {/* Główny Kontener Grid: Formularz (Lewo) + Wyniki (Prawo) */}
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8">
+    
+    {/* Kolumna Lewa: Pola wejściowe */}
+    <div class="lg:col-span-7 flex flex-col gap-6 pr-0 lg:pr-4">
+      
+      <div class="border-b border-slate-100 dark:border-slate-800 pb-3 transition-colors">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Dane wejściowe</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Wprowadź obecne statystyki koszyka oraz testowany próg darmowej dostawy.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Input: Aktualne AOV */}
+        <div>
+          <label for="fs-current-aov" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Aktualne AOV / Średni koszyk (PLN)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5"/>
+              </svg>
+            </div>
+            <input type="number" id="fs-current-aov" placeholder="np. 150" min="1" step="0.01" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+
+        {/* Input: Proponowany Próg */}
+        <div>
+          <label for="fs-threshold" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Planowany próg darmowej dostawy (PLN)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0v-11zm-1 .75c0 .414-.336.75-.75.75H4.75a.75.75 0 0 1-.75-.75v-1.5A.75.75 0 0 1 4.75 1h6.5c.414 0 .75.336.75.75v1.5zM0 6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6zm11 1.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+              </svg>
+            </div>
+            <input type="number" id="fs-threshold" placeholder="np. 200" min="1" step="1" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Input: Koszt wysyłki dla sklepu */}
+        <div>
+          <label for="fs-shipping-cost" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Koszt wysyłki ponoszony przez sklep (PLN)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+              </svg>
+            </div>
+            <input type="number" id="fs-shipping-cost" placeholder="np. 12" min="0" step="0.01" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+
+        {/* Input: Średnia Marża Sklepu */}
+        <div>
+          <label for="fs-gross-margin" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Średnia marża brutto sklepu (%)
+          </label>
+          <div class="group flex items-stretch bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 transition-all overflow-hidden">
+            <div class="flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 px-3 text-slate-400 dark:text-slate-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16a.5.5 0 0 1 0 1h-2.05a2.5 2.5 0 0 1-4.9 0H0a.5.5 0 0 1 0-1z"/>
+              </svg>
+            </div>
+            <input type="number" id="fs-gross-margin" placeholder="np. 45" min="0.1" max="100" step="0.1" class="w-full px-3 py-3 bg-transparent outline-none placeholder-slate-400 text-slate-900 dark:text-white text-sm" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {/* Kolumna Prawa: Warstwa prezentacji wyników (Dashboard) */}
+    <div class="lg:col-span-5 bg-slate-50 dark:bg-slate-900/60 rounded-xl p-6 sm:p-8 flex flex-col justify-center gap-5 border border-slate-200 dark:border-slate-800/80 transition-colors">
+      
+      <div>
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Rekomendacja progu</p>
+        <p class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight transition-colors" id="fs-res-status">Wprowadź dane</p>
+        <p class="text-xs font-semibold mt-1.5 text-slate-500 dark:text-slate-400 transition-colors" id="fs-res-badge">Wyliczenia wpływu darmowej dostawy na zysk.</p>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <div>
+          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Zysk netto koszyka spodziewanego</p>
+          <p class="text-xl font-extrabold text-slate-800 dark:text-slate-100 transition-colors" id="fs-res-new-profit">0,00 zł</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Zysk netto koszyka bazowego</p>
+          <p class="text-xl font-bold text-slate-600 dark:text-slate-400 transition-colors" id="fs-res-old-profit">0,00 zł</p>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Przewidywane nowe AOV</p>
+        <p class="text-base font-semibold text-slate-700 dark:text-slate-300 transition-colors" id="fs-res-target-aov">0,00 zł</p>
+      </div>
+
+      <div class="pt-4 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Wymagana zmiana liczby zamówień (BEP)</p>
+        <p class="text-base font-bold text-orange-500 transition-colors" id="fs-res-order-change">0% nowych zamówień</p>
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
+
+<script>
+  // Logika optymalizacji progu darmowej dostawy (Free Shipping Optimization Logic)
+  const initFreeShippingOptimizer = () => {
+    const currentAovInput = document.getElementById('fs-current-aov') as HTMLInputElement | null;
+    const thresholdInput = document.getElementById('fs-threshold') as HTMLInputElement | null;
+    const shippingCostInput = document.getElementById('fs-shipping-cost') as HTMLInputElement | null;
+    const marginInput = document.getElementById('fs-gross-margin') as HTMLInputElement | null;
+
+    const outStatus = document.getElementById('fs-res-status');
+    const outBadge = document.getElementById('fs-res-badge');
+    const outNewProfit = document.getElementById('fs-res-new-profit');
+    const outOldProfit = document.getElementById('fs-res-old-profit');
+    const outTargetAov = document.getElementById('fs-res-target-aov');
+    const outOrderChange = document.getElementById('fs-res-order-change');
+
+    const formatCurrency = (value: number) => {
+      if (isNaN(value) || !isFinite(value)) return "0,00 zł";
+      return new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(value);
+    };
+
+    const runCalculation = () => {
+      if (!currentAovInput || !thresholdInput || !shippingCostInput || !marginInput) return;
+
+      const currentAov = parseFloat(currentAovInput.value) || 0;
+      const threshold = parseFloat(thresholdInput.value) || 0;
+      const shippingCost = parseFloat(shippingCostInput.value) || 0;
+      const marginPercent = parseFloat(marginInput.value) || 0;
+
+      if (currentAov <= 0 || threshold <= 0 || marginPercent <= 0) {
+        if (outStatus) outStatus.textContent = "Wprowadź dane";
+        return;
+      }
+
+      // Zgodnie ze statystykami e-commerce, optymalny próg to ok. 15-20% powyżej obecnego AOV.
+      // Klienci motywowani progiem dobierają produkty, generując nowe "Target AOV".
+      // Szacujemy nowe AOV jako wartość leżącą w połowie drogi między starym AOV a progiem (jeśli próg > AOV).
+      let targetAov = currentAov;
+      if (threshold > currentAov) {
+        targetAov = currentAov + (threshold - currentAov) * 0.6; // konswerwatywny model wzrostu koszyka
+        if (targetAov > threshold) targetAov = threshold; // ochrona przed przestrzeleniem modelu
+      }
+
+      // Obliczanie zysku z dotychczasowego koszyka (zakładamy, że klient płacił za wysyłkę lub była ujęta)
+      const oldProfitNet = currentAov * (marginPercent / 100);
+
+      // Obliczanie zysku z nowego koszyka (sklep pokrywa koszt wysyłki, więc odejmujemy go od marży)
+      const newProfitNet = (targetAov * (marginPercent / 100)) - shippingCost;
+
+      // Wyznaczenie wymaganego wolumenu zamówień, by sfinansować darmową dostawę (Analiza BEP)
+      // Jeśli nowy zysk jednostkowy jest mniejszy niż stary, potrzebujemy więcej zamówień, aby zarobić tyle samo pieniędzy
+      let orderChangeRequiredPercent = 0;
+      if (newProfitNet > 0) {
+        orderChangeRequiredPercent = ((oldProfitNet / newProfitNet) - 1) * 100;
+      }
+
+      // Przypisanie kwot do dashboardu
+      if (outOldProfit) outOldProfit.textContent = formatCurrency(oldProfitNet);
+      if (outNewProfit) outNewProfit.textContent = formatCurrency(newProfitNet);
+      if (outTargetAov) outTargetAov.textContent = formatCurrency(targetAov);
+
+      if (outOrderChange) {
+        if (orderChangeRequiredPercent <= 0) {
+          outOrderChange.textContent = "0% (Próg od razu rentowny)";
+          outOrderChange.className = "text-base font-bold text-emerald-600 dark:text-emerald-400 transition-colors";
+        } else if (!isFinite(orderChangeRequiredPercent)) {
+          outOrderChange.textContent = "Nieosiągalny próg rentowności";
+          outOrderChange.className = "text-base font-bold text-rose-600 dark:text-rose-400 transition-colors";
+        } else {
+          outOrderChange.textContent = `+${orderChangeRequiredPercent.toFixed(1)}% zamówień`;
+          outOrderChange.className = "text-base font-bold text-orange-500 transition-colors";
+        }
+      }
+
+      // Ocena biznesowa i zmiany klas kolorystycznych UX statusu
+      if (outStatus && outBadge) {
+        if (threshold <= currentAov) {
+          outStatus.textContent = "Zbyt niski próg";
+          outStatus.className = "text-2xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight transition-colors";
+          outBadge.textContent = "Planowany próg darmowej dostawy jest niższy lub równy aktualnemu AOV. Sklep straci na każdym zamówieniu.";
+        } else if (threshold > currentAov * 2.0) {
+          outStatus.textContent = "Próg zbyt wysoki";
+          outStatus.className = "text-2xl font-extrabold text-amber-500 tracking-tight transition-colors";
+          outBadge.textContent = "Próg jest ponad 2x wyższy niż obecny koszyk. Klienci porzucą koszyki zamiast dobierać produkty.";
+        } else if (newProfitNet < oldProfitNet * 0.8) {
+          outStatus.textContent = "Wysokie ryzyko erozji marży";
+          outStatus.className = "text-2xl font-extrabold text-orange-500 tracking-tight transition-colors";
+          outBadge.textContent = "Koszt wysyłki mocno obcina Twój zysk. Aby wyjść na zero, musisz drastycznie zwiększyć wolumen sprzedaży.";
+        } else {
+          outStatus.textContent = "Próg optymalny (Bezpieczny)";
+          outStatus.className = "text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight transition-colors";
+          outBadge.textContent = "Próg zachęci do zwiększenia koszyka (AOV), zachowując zdrową marżę dla operacji logistycznych.";
+        }
+      }
+    };
+
+    // Podpięcie nasłuchiwania na wszystkie pola input
+    [currentAovInput, thresholdInput, shippingCostInput, marginInput].forEach(input => {
+      input?.addEventListener('input', runCalculation);
+    });
+  };
+
+  // Uruchomienie skryptu kompatybilne z mechanizmem Astro Island oraz View Transitions
+  initFreeShippingOptimizer();
+  document.addEventListener('astro:after-swap', initFreeShippingOptimizer);
+</script>

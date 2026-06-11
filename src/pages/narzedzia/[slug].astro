@@ -23,7 +23,7 @@ interface Props {
 
 // NAPRAWIONE: Jawne rzutowanie typu (as Props), które definitywnie usuwa błędy typu 'never' na GitHubie
 const { tool } = Astro.props as Props;
-const { title, category, excelLink } = tool.data;
+const { title, category, excelLink, type } = tool.data;
 
 // Renderowanie dokumentacji Markdown
 const { Content } = await tool.render();
@@ -106,62 +106,84 @@ const DynamicComponent = dynamicComponentLoader
 
       {/* Kolumna Prawa: Sidebar */}
       <aside class="lg:col-span-4 sticky top-24 space-y-6">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm transition-colors">
-          <div class="flex items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
-            <div class="flex items-center text-sm font-medium text-slate-600 dark:text-slate-400">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2 text-slate-400" viewBox="0 0 16 16">
-                <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
-              </svg> 
-              Kategoria
-            </div>
-            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 rounded-md">
-              {category}
-            </span>
-          </div>
-          
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center text-sm font-medium text-slate-600 dark:text-slate-400">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2 text-slate-400" viewBox="0 0 16 16">
-                <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zM5 5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1zm-4 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
-              </svg> 
-              Status operacyjny
-            </div>
-            <span class="font-semibold text-emerald-600 dark:text-emerald-400 text-sm flex items-center">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
-              Gotowy do użycia
-            </span>
-          </div>
-          
-          {excelLink && (
-            <a 
-              href={excelLink} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="flex items-center justify-center w-full px-4 py-3 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 font-semibold rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900 transition-colors text-sm text-center shadow-sm"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 16 16">
-                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
-              </svg>
-              Pobierz powiązany arkusz
-            </a>
-          )}
-        </div>
+  {/* Główny boks metadanych i zasobów */}
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm transition-colors">
+    
+    {/* Atrybut: Kategoria */}
+    <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+      <div class="flex items-center text-sm font-medium text-slate-600 dark:text-slate-400">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-slate-400" viewBox="0 0 24 24">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg> 
+        Kategoria
+      </div>
+      <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 rounded-md">
+        {category}
+      </span>
+    </div>
 
-        <div class="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-6 transition-colors">
-          <h3 class="font-bold text-slate-900 dark:text-white mb-2 flex items-center text-sm tracking-tight">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2 text-slate-400" viewBox="0 0 16 16">
-              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
-            </svg>
-            Bądź na bieżąco
-          </h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
-            Tworzę zaawansowane skrypty automatyzacji i kalkulatory inżynierskie. Zostaw maila, aby nie przegapić nowych modułów.
-          </p>
-          <input type="email" placeholder="Twój e-mail..." class="w-full px-4 py-2.5 bg-white border border-slate-200 dark:bg-slate-900 dark:border-slate-800 dark:text-white rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-sm" />
-          <button class="w-full px-4 py-2.5 bg-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200 text-white font-semibold rounded-lg hover:bg-slate-800 transition-colors text-xs uppercase tracking-wider shadow-sm">Zapisz się</button>
-        </div>
-      </aside>
+    {/* Atrybut: Typ Narzędzia (Nowe pole) */}
+    <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+      <div class="flex items-center text-sm font-medium text-slate-600 dark:text-slate-400">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-slate-400" viewBox="0 0 24 24">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        Typ modułu
+      </div>
+      <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-md">
+        {type}
+      </span>
+    </div>
+    
+    {/* Status Operacyjny (Natywny pulse lekki) */}
+    <div class="flex items-center justify-between" class={excelLink ? "mb-6" : ""}>
+      <div class="flex items-center text-sm font-medium text-slate-600 dark:text-slate-400">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-slate-400" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+        </svg> 
+        Status operacyjny
+      </div>
+      <span class="font-semibold text-emerald-600 dark:text-emerald-400 text-sm flex items-center">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+        Gotowy do użycia
+      </span>
+    </div>
+    
+    {/* Dynamiczny przycisk pobierania arkusza Excel / Google Sheets */}
+    {excelLink && (
+      <a 
+        href={excelLink} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="mt-6 flex items-center justify-center w-full px-4 py-3 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 font-semibold rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900 transition-colors text-sm text-center shadow-sm"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2" viewBox="0 0 24 24">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        Pobierz powiązany arkusz
+      </a>
+    )}
+  </div>
+
+  {/* Boks Interakcji B2B / Inżynierskiej (Zamiast newslettera) */}
+  <div class="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-6 transition-colors">
+    <h3 class="font-bold text-slate-900 dark:text-white mb-2 flex items-center text-sm tracking-tight">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-slate-400" viewBox="0 0 24 24">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      Masz pomysł na kalkulator?
+    </h3>
+    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+      Potrzebujesz dedykowanego algorytmu, automatyzacji procesów lub nietypowego modułu analitycznego? Skonfigurujmy to razem.
+    </p>
+    <a 
+      href="/kontakt" 
+      class="block w-full text-center px-4 py-2.5 bg-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200 text-white font-semibold rounded-lg hover:bg-slate-800 transition-colors text-xs uppercase tracking-wider shadow-sm"
+    >
+      Skontaktuj się ze mną
+    </a>
+  </div>
+</aside>
     </div>
 
   </div>
