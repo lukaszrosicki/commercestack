@@ -63,22 +63,24 @@ const categories = [
       </div>
     </section>
 
-    {/* Siatka Kart - Renderowanie wyłącznie istniejących pozycji z kolekcji */}
-   {tools.map((tool: CollectionEntry<'tools'>) => (
-<div 
-    class="tool-item-wrapper h-full transition-all duration-200" 
-    data-category={tool.data.category?.toLowerCase()} 
-    data-title={tool.data.title?.toLowerCase()}
-  >
-    <ToolCard 
-      title={tool.data.title}
-      category={tool.data.category}
-      type={tool.data.type}
-      shortdesc={tool.data.shortdesc}
-      slug={tool.slug}
-    />
-  </div>
-))}
+   {/* Siatka Kart - Zabezpieczona kontenerem CSS Grid */}
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-4">
+      {tools.map((tool: CollectionEntry<'tools'>) => (
+        <div 
+          class="tool-item-wrapper h-full transition-all duration-200" 
+          data-category={tool.data.category?.toLowerCase()} 
+          data-title={tool.data.title?.toLowerCase()}
+        >
+          <ToolCard 
+            title={tool.data.title}
+            category={tool.data.category}
+            type={tool.data.type}
+            shortdesc={tool.data.shortdesc}
+            slug={tool.slug}
+          />
+        </div>
+      ))}
+    </section>
 
   </div>
 </Layout>
