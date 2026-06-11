@@ -1,15 +1,20 @@
 ---
 // src/pages/narzedzia/index.astro
-// Architektura z lewym panelem filtrów (Sidebar), wyszukiwarką i obsługą Dark Mode
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content'; // JAWNY TYP KOLEKCJI
 import Layout from '../../layouts/Layout.astro';
 import ToolCard from '../../components/ToolCard.astro';
 
-// Pobieramy dane z prawidłowej kolekcji narzędzi (Single Source of Truth)
-const tools = await getCollection('tools');
+// Pobieramy dane i jawnie typujemy jako tablicę wpisów z kolekcji 'tools'
+const tools: CollectionEntry<'tools'>[] = await getCollection('tools');
 
-// Dynamiczne pobieranie unikalnych kategorii na podstawie rzeczywistych danych
-const categories = [...new Set(tools.map(t => t.data.category?.toLowerCase()).filter(Boolean))];
+// Dynamiczne pobieranie unikalnych kategorii z jawnym wskazaniem typu jako string[]
+const categories = [
+  ...new Set(
+    tools
+      .map((t: CollectionEntry<'tools'>) => t.data.category?.toLowerCase())
+      .filter((cat): cat is string => typeof cat === 'string') // Dokładny Type Guard dla TS
+  )
+];
 ---
 
 <Layout title="Narzędzia i Kalkulatory - CStack.eu">
@@ -74,21 +79,21 @@ const categories = [...new Set(tools.map(t => t.data.category?.toLowerCase()).fi
 
         {/* Siatka komponentów ToolCard */}
         <section class="tools-grid">
-          {tools.map((tool) => (
-            <div 
-              class="tool-item-wrapper h-full transition-all duration-200" 
-              data-category={tool.data.category?.toLowerCase()} 
-              data-title={tool.data.title?.toLowerCase()}
-            >
-              <ToolCard 
-                title={tool.data.title}
-                category={tool.data.category}
-                type={tool.data.type}
-                shortdesc={tool.data.shortdesc}
-                slug={tool.slug}
-              />
-            </div>
-          ))}
+          {tools.map((tool: CollectionEntry<'tools'>) => (
+  <div 
+    class="tool-item-wrapper h-full transition-all duration-200" 
+    data-category={tool.data.category?.toLowerCase()} 
+    data-title={tool.data.title?.toLowerCase()}
+  >
+    <ToolCard 
+      title={tool.data.title}
+      category={tool.data.category}
+      type={tool.data.type}
+      shortdesc={tool.data.shortdesc}
+      slug={tool.slug}
+    />
+  </div>
+))}
         </section>
 
       </div>

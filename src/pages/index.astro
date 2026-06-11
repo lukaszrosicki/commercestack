@@ -1,15 +1,18 @@
 ---
 // src/pages/index.astro
-// Dynamiczna strona główna renderująca wyłącznie istniejące narzędzia z kolekcji
+import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import ToolCard from '../components/ToolCard.astro';
-import { getCollection } from 'astro:content';
 
-// Pobieramy wyłącznie realne i istniejące dane z kolekcji tools
-const tools = await getCollection('tools');
+const tools: CollectionEntry<'tools'>[] = await getCollection('tools');
 
-// Dynamiczne wyciąganie unikalnych kategorii bezpośrednio z rzeczywistych danych
-const categories = [...new Set(tools.map(t => t.data.category.toLowerCase()))];
+const categories = [
+  ...new Set(
+    tools
+      .map((t: CollectionEntry<'tools'>) => t.data.category?.toLowerCase())
+      .filter((cat): cat is string => typeof cat === 'string')
+  )
+];
 ---
 
 <Layout title="CStack.eu - Panel Narzędzi Inżynierskich">
@@ -61,30 +64,21 @@ const categories = [...new Set(tools.map(t => t.data.category.toLowerCase()))];
     </section>
 
     {/* Siatka Kart - Renderowanie wyłącznie istniejących pozycji z kolekcji */}
-    {tools.length > 0 ? (
-      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tools.map((tool) => (
-          <div 
-            class="tool-card-wrapper h-full transition-all duration-200" 
-            data-category={tool.data.category?.toLowerCase()} 
-            data-title={tool.data.title?.toLowerCase()}
-          >
-            <ToolCard 
-              title={tool.data.title}
-              category={tool.data.category}
-              type={tool.data.type}
-              shortdesc={tool.data.shortdesc}
-              slug={tool.slug}
-            />
-          </div>
-        ))}
-      </section>
-    ) : (
-      /* Fallback wizualny w przypadku pustej bazy narzędzi */
-      <div class="text-center py-12 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/20">
-        <p class="text-slate-500 dark:text-slate-400 font-medium">Aktualnie brak opublikowanych narzędzi.</p>
-      </div>
-    )}
+   {tools.map((tool: CollectionEntry<'tools'>) => (
+<div 
+    class="tool-item-wrapper h-full transition-all duration-200" 
+    data-category={tool.data.category?.toLowerCase()} 
+    data-title={tool.data.title?.toLowerCase()}
+  >
+    <ToolCard 
+      title={tool.data.title}
+      category={tool.data.category}
+      type={tool.data.type}
+      shortdesc={tool.data.shortdesc}
+      slug={tool.slug}
+    />
+  </div>
+))}
 
   </div>
 </Layout>
